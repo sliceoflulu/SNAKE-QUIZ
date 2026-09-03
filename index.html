@@ -46,7 +46,9 @@
     body { 
       /* LATAR BELAKANG MENGGUNAKAN FOTO ESTETIK (Pemandangan Alam/Gunung HD) */
       background: url('https://i.pinimg.com/736x/ac/a7/b2/aca7b2981966b5407e937f2a7f1c9910.jpg') no-repeat center center fixed;
-      background-size: cover;
+      
+      background-size: 100% 100% !important;
+      background-attachment: fixed;
       color: var(--text-color); 
       min-height: 100vh; 
       display: flex; 
@@ -101,6 +103,7 @@
       color: #fdcb6e;
       text-shadow: 0 5px 15px rgba(0,0,0,0.3);
       animation: pulseText 1.5s infinite ease-in-out;
+      word-break: keep-all; /* Tambahkan baris ini */
     }
 
     .loading-subtitle {
@@ -372,7 +375,7 @@
 
       <div class="progress-wrapper">
         <div class="progress-header">
-          <span class="progress-label">Memuat Dunia Game...</span>
+          <span class="progress-label">LOADING</span>
           <span class="progress-text" id="progress-percent">0%</span>
         </div>
         <div class="progress-bar-container">
