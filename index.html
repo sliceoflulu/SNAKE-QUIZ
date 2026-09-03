@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Snake</title>
+  <style>
+    .game-hud {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 12px;
+    }
+    .hud-badge {
+      background: #f39c12;
+      color: #fff;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 0.95rem;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+      border: 2px solid #d35400;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    :root {
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --text-color: #2d3436;
+      --border-color: #dfe6e9;
+      --btn-bg: #dfe6e9;
+      --btn-text: #2d3436;
+      --accent-yellow: #fdcb6e;
+    }
+
+    body.dark-mode {
+      --card-bg: rgba(53, 59, 72, 0.95);
+      --text-color: #f5f6fa;
+      --border-color: #718093;
+      --btn-bg: #718093;
+      --btn-text: #f5f6fa;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif; }
+    
+    body { 
+      /* LATAR BELAKANG MENGGUNAKAN FOTO ESTETIK (Pemandangan Alam/Gunung HD) */
+      background: url('https://i.pinimg.com/736x/ac/a7/b2/aca7b2981966b5407e937f2a7f1c9910.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: var(--text-color); 
+      min-height: 100vh; 
+      display: flex; 
+      flex-direction: column; 
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Efek lapisan transparan agar konten tetap mudah dibaca di atas foto */
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.25);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* LOADING / SPLASH SCREEN */
+    #loading-screen {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: linear-gradient(135deg, #0984e3, #6c5ce7);
+      z-index: 999999;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      transition: opacity 0.6s ease, visibility 0.6s;
+    }
+
+    #loading-screen.fade-out {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .loading-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-width: 650px;
+      width: 100%;
+    }
+
+    .loading-title {
+      font-size: 3.5rem;
+      font-weight: 900;
+      letter-spacing: 6px;
+      color: #fdcb6e;
+      text-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      animation: pulseText 1.5s infinite ease-in-out;
+    }
+
+    .loading-subtitle {
+      font-size: 1.1rem;
+      margin-top: 10px;
+      margin-bottom: 40px;
+      font-weight: bold;
+      line-height: 1.4;
+      color: #f5f6fa;
+      letter-spacing: 1px;
+    }
+
+    .progress-wrapper {
+      width: 85%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .progress-header {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      padding: 0 5px;
+    }
+
+    .progress-label {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #ffeaa7;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .progress-text {
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: #ffffff;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .progress-bar-container {
+      width: 100%;
+      height: 30px;
+      background: rgba(15, 23, 42, 0.6);
+      border-radius: 50px;
+      padding: 4px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      box-shadow: inset 0 4px 8px rgba(0,0,0,0.5), 0 8px 20px rgba(0,0,0,0.25);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #ffbe76, #ff7979, #badc58, #00b894);
+      background-size: 300% 100%;
+      border-radius: 50px;
+      box-shadow: 0 0 15px rgba(253, 203, 110, 0.9);
+      transition: width 0.1s linear;
+      position: relative;
+      animation: gradientShift 3s ease infinite;
+    }
+
+    .progress-bar-fill::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%; width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+      animation: shine 1.8s infinite;
+    }
+
+    @keyframes shine {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @keyframes pulseText { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+
+    header { 
+      position: relative;
+      z-index: 10;
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      padding: 15px 30px; 
+      background: rgba(255, 255, 255, 0.95); 
+      border-bottom: 4px solid var(--accent-yellow); 
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    .logo { font-size: 1.8rem; font-weight: bold; color: #6c5ce7; display: flex; align-items: center; gap: 8px; }
+    
+    .header-controls { display: flex; gap: 10px; align-items: center; }
+    .btn-dark-toggle, .btn-music-toggle { 
+      padding: 8px 14px; 
+      border-radius: 20px; 
+      border: 2px solid var(--accent-yellow); 
+      background: var(--btn-bg); 
+      color: var(--btn-text); 
+      cursor: pointer; 
+      font-weight: bold; 
+      transition: transform 0.2s;
+    }
+    .btn-dark-toggle:hover, .btn-music-toggle:hover { transform: scale(1.05); }
+
+    main { position: relative; z-index: 10; flex: 1; display: flex; justify-content: center; align-items: center; padding: 20px; }
+    
+    .view-screen { 
+      display: none; 
+      width: 100%; 
+      max-width: 480px; 
+      background: var(--card-bg); 
+      backdrop-filter: blur(8px);
+      padding: 30px; 
+      border-radius: 24px; 
+      border: 4px solid #ffffff; 
+      box-shadow: 0 15px 35px rgba(0,0,0,0.3); 
+      text-align: center; 
+      animation: fadeIn 0.4s ease-out;
+    }
+    .view-screen.active { display: block; }
+    .view-screen.wide { max-width: 800px; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .mascot-container { display: inline-block; margin-bottom: 10px; position: relative; }
+    .mascot-snake {
+      width: 90px;
+      height: 90px;
+      object-fit: contain;
+      animation: snakeWiggle 3s infinite ease-in-out;
+      filter: drop-shadow(0 8px 12px rgba(9, 132, 227, 0.3));
+    }
+
+    @keyframes snakeWiggle {
+      0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+      25% { transform: translateY(-8px) rotate(-6deg) scale(1.03); }
+      50% { transform: translateY(0) rotate(0deg) scale(1); }
+      75% { transform: translateY(-5px) rotate(6deg) scale(1.02); }
+    }
+
+    h2 { margin-bottom: 20px; }
+
+    .form-group { text-align: left; margin-bottom: 15px; }
+    .form-group label { display: block; font-weight: bold; margin-bottom: 5px; }
+    .form-control { 
+      width: 100%; 
+      padding: 10px; 
+      border: 2px solid var(--border-color); 
+      border-radius: 10px; 
+      font-size: 1rem; 
+      background: rgba(255,255,255,0.8);
+      transition: border-color 0.2s;
+    }
+    body.dark-mode .form-control { background: rgba(45,52,54,0.8); color: white; }
+    .form-control:focus { outline: none; border-color: #0984e3; }
+
+    .menu-buttons { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
+    .btn-menu { 
+      width: 100%; 
+      padding: 12px; 
+      border: none; 
+      border-radius: 12px; 
+      font-size: 1rem; 
+      font-weight: bold; 
+      cursor: pointer; 
+      background: #dfe9e9; 
+      color: #2d3436; 
+      box-shadow: 0 4px 0 #4f3704; 
+      transition: transform 0.1s, background 0.2s;
+    }
+    .btn-menu:active { transform: translateY(2px); box-shadow: 0 2px 0 #b2bec3; }
+    .btn-menu:hover { filter: brightness(1.05); }
+    .btn-primary { background: #0984e3; color: white; box-shadow: 0 4px 0 #0652dd; }
+    .btn-success { background: #00b894; color: white; box-shadow: 0 4px 0 #008b6e; }
+    .btn-teacher { background: #6c5ce7; color: white; box-shadow: 0 4px 0 #4834d4; }
+
+    /* KANVAS PAPAN KAYU */
+    #gameCanvas { 
+  background: #d35400; 
+  border: 6px solid #5a3825; 
+  border-radius: 16px; 
+  cursor: crosshair; 
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+  /* Tambahkan 2 baris ini agar canvas responsif di HP: */
+  max-width: 100%;
+  height: auto;
+}
+
+/* Sesuaikan padding container di layar HP */
+@media (max-width: 600px) {
+  .view-screen {
+    padding: 15px;
+    width: 95%;
+  }
+  header {
+    padding: 10px 15px;
+  }
+  .logo {
+    font-size: 1.2rem;
+  }
+}
+
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th, td { border: 1px solid var(--border-color); padding: 8px; text-align: center; }
+    th { background: var(--accent-yellow); color: #2d3436; }
+
+    .modal { 
+      position: fixed; 
+      top: 0; left: 0; width: 100vw; height: 100vh; 
+      background: rgba(0,0,0,0.75); 
+      display: flex; justify-content: center; align-items: center; 
+      z-index: 99999; 
+    }
+
+    .modal-content { 
+      background: var(--card-bg); 
+      padding: 25px; 
+      border-radius: 20px; 
+      width: 90%; 
+      max-width: 420px; 
+      text-align: center; 
+      border: 4px solid var(--accent-yellow); 
+      animation: popIn 0.3s ease-out;
+    }
+    .opts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+
+    .btn-ans {
+      width: 100%; padding: 14px; border: 2px solid #b2bec3; border-radius: 12px;
+      font-size: 1.1rem; font-weight: bold; cursor: pointer; background: #f1f2f6; color: #2d3436;
+      box-shadow: 0 4px 0 #b2bec3;
+    }
+    .btn-ans:hover { background: #eccc68; }
+
+    @keyframes popIn {
+      0% { transform: scale(0.7); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <!-- AUDIO LATAR BELAKANG (BGM) -->
+  <audio id="bgm" loop>
+    <!-- Menggunakan musik latar bebas hak cipta bernuansa ceria/game edukasi -->
+    <source src="game.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- LOADING SCREEN -->
+  <div id="loading-screen">
+    <div class="loading-content">
+      <div class="loading-title">SNAKE-QUIZ</div>
+      <div class="loading-subtitle">inovasi Game Web Edukatif Berbasis Multiplayer Snake-Quiz untuk meningkatkan ketangkasan berhitung anak</div>
+
+      <div class="progress-wrapper">
+        <div class="progress-header">
+          <span class="progress-label">Memuat Dunia Game...</span>
+          <span class="progress-text" id="progress-percent">0%</span>
+        </div>
+        <div class="progress-bar-container">
+          <div class="progress-bar-fill" id="progress-bar"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <header>
+    <div class="logo">
+      <svg class="mascot-snake" style="width:32px; height:32px; animation-duration:2s;" viewBox="0 0 100 100">
+        <path d="M20,50 Q40,20 60,50 T100,50" fill="none" stroke="#00b894" stroke-width="15" stroke-linecap="round"/>
+        <circle cx="85" cy="42" r="3" fill="#000"/>
+      </svg>
+      Snake Quiz
+    </div>
+    <div class="header-controls">
+      <button class="btn-music-toggle" id="btn-music" onclick="toggleMusic()">🔊 Musik: ON</button>
+      <button class="btn-dark-toggle" onclick="toggleDarkMode()">🌙 Dark Mode</button>
+    </div>
+  </header>
+
+  <main>
+    <div id="screen-home" class="view-screen active">
+      <div class="mascot-container">
+        <svg class="mascot-snake" viewBox="0 0 120 120">
+          <path d="M15,75 Q35,35 60,75 T105,65" fill="none" stroke="#00b894" stroke-width="22" stroke-linecap="round"/>
+          <path d="M15,75 Q35,35 60,75 T105,65" fill="none" stroke="#55efc4" stroke-width="12" stroke-linecap="round"/>
+          <circle cx="95" cy="55" r="4" fill="#2d3436"/>
+          <path d="M105,65 Q115,65 118,60 M105,65 Q115,65 118,70" fill="none" stroke="#d63031" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <h2>Selamat Datang, Petualang!</h2>
+
+      <div class="form-group">
+        <label for="player-name">Username:</label>
+        <input type="text" id="player-name" class="form-control" placeholder="Masukkan nama..." value=" ">
+      </div>
+
+      <div class="form-group">
+        <label for="room-code">IDroom :</label>
+        <input type="text" id="room-code" class="form-control" style="text-transform: uppercase; letter-spacing: 2px; font-weight: bold;" placeholder="Masukkan Kode Room" value=" ">
+      </div>
+
+      <div class="menu-buttons">
+        <button class="btn-menu btn-primary" onclick="validateAndStartGame()">🎮 START GAME</button>
+        <button class="btn-menu" onclick="openHowToPlayModal()">📖 Cara Bermain</button>
+        <button class="btn-menu" onclick="showScreen('screen-leaderboard')">🏆 Leaderboard</button>
+        <button class="btn-menu btn-teacher" onclick="openTeacherLogin()">👨‍🏫 Akses Guru</button>
+      </div>
+    </div>
+
+    <div id="screen-game" class="view-screen wide">
+      <div class="game-hud">
+        <div class="hud-badge">📏 <span id="hud-length">15</span> cm</div>
+        <div class="hud-badge">⭐ <span id="hud-score">0</span> Poin</div>
+        <div class="hud-badge">✅ <span id="hud-correct">0</span> Benar</div>
+      </div>
+      <canvas id="gameCanvas" width="700" height="400"></canvas>
+      <button class="btn-menu" style="margin-top: 15px;" onclick="showScreen('screen-home')">❌ Keluar Permainan</button>
+    </div>
+
+    <div id="screen-teacher" class="view-screen wide">
+      <h2>👨‍🏫 Panel Kontrol Guru</h2>
+      <div style="background: rgba(238, 245, 255, 0.8); padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 2px dashed #0984e3;">
+        <h3 style="color: #0984e3; margin-bottom: 5px;">Kode Room Aktif Saat Ini:</h3>
+        <span id="active-room-display" style="font-size: 2rem; font-weight: bold; color: #6c5ce7; letter-spacing: 3px;">MATH123</span>
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+        <button class="btn-menu btn-success" onclick="createNewRoom()">🔑 Buat Kode Room Baru</button>
+        <button class="btn-menu btn-primary" onclick="showScreen('screen-manage-materi')">📚 Kelola Materi & Soal</button>
+      </div>
+
+      <h3>📊 Data Nilai Siswa</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Nama wa</th>
+            <th>Panjang Ular</th>
+            <th>Poin</th>
+            <th>Akurasi</th>
+          </tr>
+        </thead>
+        <tbody id="teacher-table-body"></tbody>
+      </table>
+      <button class="btn-menu" style="margin-top: 20px;" onclick="showScreen('screen-home')">⬅ Keluar ke Menu Utama</button>
+    </div>
+
+    <div id="screen-manage-materi" class="view-screen wide">
+      <h2>📚 Kelola Materi & Tambah Soal</h2>
+      
+      <div style="background: rgba(241, 242, 246, 0.8); padding: 15px; border-radius: 12px; text-align: left; margin-bottom: 20px;">
+        <h4 style="margin-bottom: 10px; color: #0984e3;">➕ Tambah Soal Baru</h4>
+        
+        <div class="form-group">
+          <label>Pertanyaan Soal:</label>
+          <input type="text" id="new-q-text" class="form-control" placeholder="Misal: Berapakah 5 + 5?">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="form-group"><label>Opsi A:</label><input type="text" id="opt-a" class="form-control"></div>
+          <div class="form-group"><label>Opsi B:</label><input type="text" id="opt-b" class="form-control"></div>
+          <div class="form-group"><label>Opsi C:</label><input type="text" id="opt-c" class="form-control"></div>
+          <div class="form-group"><label>Opsi D:</label><input type="text" id="opt-d" class="form-control"></div>
+        </div>
+
+        <div class="form-group">
+          <label>Jawaban Benar:</label>
+          <input type="text" id="opt-ans" class="form-control" placeholder="Jawaban yang benar">
+        </div>
+
+        <button class="btn-menu btn-success" onclick="addCustomQuestion()">💾 Simpan Soal</button>
+      </div>
+
+      <h3>Daftar Soal Saat Ini</h3>
+      <div id="question-list-display" style="text-align: left; margin-top: 10px; max-height: 200px; overflow-y: auto;"></div>
+
+      <button class="btn-menu" style="margin-top: 20px;" onclick="showScreen('screen-teacher')">⬅ Kembali ke Panel Guru</button>
+    </div>
+
+    <div id="screen-leaderboard" class="view-screen">
+      <h2>🏆 Leaderboard Kelas</h2>
+      <ol id="leaderboard-list" style="text-align: left; padding-left: 20px; margin-bottom: 20px; font-weight: bold;"></ol>
+      <button class="btn-menu" onclick="showScreen('screen-home')">⬅ Kembali</button>
+    </div>
+  </main>
+
+  <!-- MODAL NOTIFIKASI KUSTOM -->
+  <div id="modal-alert" class="modal hidden">
+    <div class="modal-content" style="border-color: #0984e3;">
+      <div id="alert-icon" style="font-size: 3rem; margin-bottom: 5px;">🔔</div>
+      <h3 id="alert-title" style="margin-bottom: 10px; color: #0984e3;">Pemberitahuan</h3>
+      <p id="alert-msg" style="font-size: 1rem; margin-bottom: 20px; font-weight: bold; color: #2d3436; line-height: 1.5;"></p>
+      <button class="btn-menu btn-primary" onclick="closeCustomAlert()">Oke</button>
+    </div>
+  </div>
+
+  <!-- MODAL LOGIN GURU -->
+  <div id="modal-teacher-login" class="modal hidden">
+    <div class="modal-content" style="border-color: #6c5ce7;">
+      <h3 style="margin-bottom: 15px; color: #6c5ce7;">👨‍🏫 Login Guru</h3>
+      <div class="form-group">
+        <label for="teacher-pin-input">Masukkan PIN Keamanan Guru:</label>
+        <input type="password" id="teacher-pin-input" class="form-control" placeholder="PIN: 1234" style="text-align: center; font-size: 1.2rem; letter-spacing: 4px;">
+      </div>
+      <p id="teacher-login-err" style="color: #d63031; font-size: 0.9rem; margin-bottom: 10px; display: none;">PIN Salah! Silakan coba PIN: 1234</p>
+      <div style="display: flex; gap: 10px;">
+        <button class="btn-menu btn-teacher" onclick="verifyTeacherPin()">Masuk</button>
+        <button class="btn-menu" onclick="closeTeacherLogin()">Batal</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-info" class="modal hidden">
+    <div class="modal-content" style="text-align: left;">
+      <h3 id="info-title" style="margin-bottom: 15px; color: #0984e3; text-align: center;">Judul</h3>
+      <div id="info-body" style="font-size: 0.95rem; line-height: 1.6; margin-bottom: 20px;"></div>
+      <button class="btn-menu btn-primary" onclick="closeInfoModal()">Paham 👍</button>
+    </div>
+  </div>
+
+  <div id="modal-question" class="modal hidden">
+    <div class="modal-content">
+      <h3 style="margin-bottom: 10px; color:#6c5ce7;">❓ Soal Matematika</h3>
+      <p id="q-text" style="font-size: 1.1rem; font-weight: bold; margin-bottom: 15px;">Soal...</p>
+      <div id="q-options" class="opts-grid"></div>
+    </div>
+  </div>
+
+  <div id="modal-result" class="modal hidden">
+    <div id="result-box" class="modal-content">
+      <div id="result-icon" style="font-size: 3.5rem; margin-bottom: 10px;">🎉</div>
+      <h3 id="result-title" style="margin-bottom: 10px;">Jawaban Benar!</h3>
+      <p id="result-msg" style="font-size: 1.05rem; margin-bottom: 20px; font-weight: bold; color: #636e72;">Panjang ular +3 cm</p>
+      <button class="btn-menu btn-primary" onclick="closeResultModal()">Lanjutkan 🐍</button>
+    </div>
+  </div>
+
+  <div id="modal-victory" class="modal hidden">
+    <div class="modal-content" style="border-width: 5px; border-color: #fdcb6e;">
+      <div style="font-size: 4rem; margin-bottom: 5px;">🏆</div>
+      <h2 style="color: #d63031; margin-bottom: 5px;">SEMUA SOAL TERJAWAB!</h2>
+      <p style="font-size: 1.1rem; font-weight: bold; color: #6c5ce7;" id="vic-player">Pemain: Siswa SMP</p>
+      
+      <div style="background: rgba(241, 242, 246, 0.9); padding: 12px; border-radius: 12px; margin: 10px 0; display: flex; justify-content: space-around; font-weight: bold;">
+        <div>⭐ Poin: <span id="vic-score" style="color:#0984e3;">0</span></div>
+        <div>📏 Panjang: <span id="vic-length" style="color:#6c5ce7;">15 cm</span></div>
+        <div>✅ Benar: <span id="vic-correct" style="color:#00b894;">0/3</span></div>
+      </div>
+
+      <h3 id="vic-rank" style="margin: 15px 0; color: #e17055;">Peringkat Sementara: #1</h3>
+
+      <div class="menu-buttons">
+        <button class="btn-menu btn-success" onclick="restartGame()">🔄 Main Lagi</button>
+        <button class="btn-menu btn-primary" onclick="showScreen('screen-leaderboard')">🏆 Lihat Leaderboard</button>
+        <button class="btn-menu" onclick="showScreen('screen-home')">🏠 Menu Utama</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let activeRoomCode = "MATH123";
+    const teacherPIN = "1234";
+    let isMusicPlaying = false;
+
+    function showAlert(msg, title = "Pemberitahuan", icon = "🔑") {
+      document.getElementById('alert-title').innerText = title;
+      document.getElementById('alert-msg').innerText = msg;
+      document.getElementById('alert-icon').innerText = icon;
+      document.getElementById('modal-alert').classList.remove('hidden');
+    }
+
+    function closeCustomAlert() {
+      document.getElementById('modal-alert').classList.add('hidden');
+    }
+
+    // KONTROL MUSIK LATAR BELAKANG
+    function toggleMusic() {
+      const bgm = document.getElementById('bgm');
+      const btn = document.getElementById('btn-music');
+      if (isMusicPlaying) {
+        bgm.pause();
+        isMusicPlaying = false;
+        btn.innerText = "🔇 Musik: OFF";
+      } else {
+        bgm.play().catch(e => console.log("Audio play blocked"));
+        isMusicPlaying = true;
+        btn.innerText = "🔊 Musik: ON";
+      }
+    }
+
+    // ANIMASI LOADING & OTOMATIS PUTAR MUSIK SETELAH LOADING SELESAI
+    window.addEventListener('load', () => {
+      let percent = 0;
+      const percentEl = document.getElementById('progress-percent');
+      const barEl = document.getElementById('progress-bar');
+      const loadingScreen = document.getElementById('loading-screen');
+      const bgm = document.getElementById('bgm');
+
+      const interval = setInterval(() => {
+        percent += 2;
+        if (percent > 100) percent = 100;
+        
+        percentEl.innerText = percent + "%";
+        barEl.style.width = percent + "%";
+
+        if (percent >= 100) {
+          clearInterval(interval);
+          setTimeout(() => {
+            loadingScreen.classList.add('fade-out');
+            
+            // Putar musik otomatis setelah loading selesai
+            bgm.volume = 0.4;
+            bgm.play().then(() => {
+              isMusicPlaying = true;
+              document.getElementById('btn-music').innerText = "🔊 Musik: ON";
+            }).catch(() => {
+              // Jika diblokir browser, pengguna bisa mengaktifkannya lewat tombol musik di atas
+              isMusicPlaying = false;
+              document.getElementById('btn-music').innerText = "🔇 Musik: OFF";
+            });
+
+          }, 400);
+        }
+      }, 35);
+    });
+
+    let questions = [
+      { q: "Berapakah 12 x 8?", opts: ["86", "96", "108", "116"], ans: "96" },
+      { q: "Jika 3x + 5 = 20, berapakah nilai x?", opts: ["3", "4", "5", "6"], ans: "5" },
+      { q: "Luas persegi dengan sisi 6 cm adalah...", opts: ["12 cm²", "24 cm²", "36 cm²", "48 cm²"], ans: "36 cm²" }
+    ];
+
+    function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
+
+    function showScreen(screenId) {
+      document.querySelectorAll('.view-screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('modal-victory').classList.add('hidden');
+      document.getElementById(screenId).classList.add('active');
+
+      if (screenId === 'screen-game') startGame();
+      else if (screenId === 'screen-teacher') renderTeacherData();
+      else if (screenId === 'screen-leaderboard') renderLeaderboard();
+      else if (screenId === 'screen-manage-materi') renderQuestionList();
+    }
+
+    function validateAndStartGame() {
+      const inputCode = document.getElementById('room-code').value.trim().toUpperCase();
+      if (inputCode !== activeRoomCode) {
+        showAlert("Kode Room tidak cocok dengan kode aktif guru (" + activeRoomCode + ")!", "Peringatan", "⚠️");
+        return;
+      }
+      showScreen('screen-game');
+    }
+
+    function openTeacherLogin() {
+      document.getElementById('teacher-pin-input').value = '';
+      document.getElementById('teacher-login-err').style.display = 'none';
+      document.getElementById('modal-teacher-login').classList.remove('hidden');
+    }
+
+    function closeTeacherLogin() {
+      document.getElementById('modal-teacher-login').classList.add('hidden');
+    }
+
+    function verifyTeacherPin() {
+      const pin = document.getElementById('teacher-pin-input').value.trim();
+      if (pin === teacherPIN || pin === "admin") {
+        closeTeacherLogin();
+        showScreen('screen-teacher');
+      } else {
+        document.getElementById('teacher-login-err').style.display = 'block';
+      }
+    }
+
+    function createNewRoom() {
+      const randomNum = Math.floor(1000 + Math.random() * 9000);
+      activeRoomCode = "MATH" + randomNum;
+      document.getElementById('active-room-display').innerText = activeRoomCode;
+      document.getElementById('room-code').value = activeRoomCode;
+      showAlert("Kode Room Baru Berhasil Dibuat: " + activeRoomCode, "Berhasil", "🔑");
+    }
+
+    function addCustomQuestion() {
+      const q = document.getElementById('new-q-text').value.trim();
+      const a = document.getElementById('opt-a').value.trim();
+      const b = document.getElementById('opt-b').value.trim();
+      const c = document.getElementById('opt-c').value.trim();
+      const d = document.getElementById('opt-d').value.trim();
+      const ans = document.getElementById('opt-ans').value.trim();
+
+      if (!q || !a || !b || !c || !d || !ans) {
+        showAlert("Harap isi semua kolom soal dan pilihan jawaban!", "Data Belum Lengkap", "⚠️");
+        return;
+      }
+
+      questions.push({ q: q, opts: [a, b, c, d], ans: ans });
+      showAlert("Soal baru berhasil ditambahkan!", "Sukses", "✅");
+      
+      document.getElementById('new-q-text').value = '';
+      document.getElementById('opt-a').value = '';
+      document.getElementById('opt-b').value = '';
+      document.getElementById('opt-c').value = '';
+      document.getElementById('opt-d').value = '';
+      document.getElementById('opt-ans').value = '';
+
+      renderQuestionList();
+    }
+
+    function renderQuestionList() {
+      const container = document.getElementById('question-list-display');
+      container.innerHTML = questions.map((q, i) => `
+        <div style="background:rgba(255,255,255,0.9); border:1px solid #dfe6e9; padding:8px; margin-bottom:5px; border-radius:8px; color:#2d3436;">
+          <b>${i+1}. ${q.q}</b> <br>
+          <small>Jawaban: ${q.ans}</small>
+        </div>
+      `).join('');
+    }
+
+    function openHowToPlayModal() {
+      document.getElementById('info-title').innerText = "📖 Cara Bermain";
+      document.getElementById('info-body').innerHTML = `
+        <ul style="padding-left: 20px;">
+          <li><b>Kode Room:</b> Masukkan kode room yang diberikan oleh guru.</li>
+          <li><b>Arahkan Ular:</b> Gerakkan kursor mouse untuk mengarahkan kepala ular.</li>
+          <li><b>Makan Bola Soal:</b> Dekati bola bernomor 🔵 untuk menjawab soal.</li>
+          <li><b>Jawab Benar:</b> Ular bertambah panjang <b>+3 cm</b> & dapat <b>+10 poin</b>.</li>
+          <li><b>Menang:</b> Selesaikan seluruh soal yang ada di arena!</li>
+        </ul>
+      `;
+      document.getElementById('modal-info').classList.remove('hidden');
+    }
+
+    function closeInfoModal() {
+      document.getElementById('modal-info').classList.add('hidden');
+    }
+
+    /* GAME ENGINE */
+    let player = { name: "Siswa SMP", length: 15, score: 0, correct: 0, x: 200, y: 200, speed: 2.5 };
+    let snakeTrail = [];
+    let targetMouse = { x: 200, y: 200 };
+    let bubbles = [];
+    let canvas, ctx, animId;
+    let isModalOpen = false;
+
+    function startGame() {
+      canvas = document.getElementById('gameCanvas');
+      ctx = canvas.getContext('2d');
+      player.name = document.getElementById('player-name').value || "Siswa SMP";
+      player.length = 15;
+      player.score = 0;
+      player.correct = 0;
+      isModalOpen = false;
+      
+      document.getElementById('modal-victory').classList.add('hidden');
+
+      player.x = canvas.width / 2;
+      player.y = canvas.height / 2;
+      snakeTrail = [];
+      targetMouse = { x: player.x, y: player.y };
+      
+      bubbles = questions.map((q, index) => ({
+        id: index + 1,
+        x: Math.floor(80 + Math.random() * (canvas.width - 160)),
+        y: Math.floor(80 + Math.random() * (canvas.height - 160)),
+        q: q
+      }));
+
+      // Fungsi pembantu untuk menghitung posisi sentuh/klik sesuai ukuran canvas
+function updateInputPosition(clientX, clientY) {
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  
+  targetMouse.x = (clientX - rect.left) * scaleX;
+  targetMouse.y = (clientY - rect.top) * scaleY;
+}
+
+// Kontrol Mouse (Laptop)
+canvas.onmousemove = (e) => {
+  updateInputPosition(e.clientX, e.clientY);
+};
+
+// Kontrol Touchscreen (HP)
+canvas.ontouchstart = (e) => {
+  if (e.touches.length > 0) {
+    updateInputPosition(e.touches[0].clientX, e.touches[0].clientY);
+  }
+};
+
+canvas.ontouchmove = (e) => {
+  e.preventDefault(); // Biar layar HP enggak ikut ke-scroll saat main
+  if (e.touches.length > 0) {
+    updateInputPosition(e.touches[0].clientX, e.touches[0].clientY);
+  }
+};
+
+      if (animId) cancelAnimationFrame(animId);
+      loop();
+    }
+
+    function loop() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      ctx.strokeStyle = "#f1f2f6";
+      ctx.lineWidth = 1;
+      for (let x = 0; x < canvas.width; x += 30) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+      }
+      for (let y = 0; y < canvas.height; y += 30) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+      }
+
+      if (!isModalOpen) {
+        const angle = Math.atan2(targetMouse.y - player.y, targetMouse.x - player.x);
+        const distToMouse = Math.hypot(targetMouse.x - player.x, targetMouse.y - player.y);
+        
+        if (distToMouse > 5) {
+          player.x += Math.cos(angle) * player.speed;
+          player.y += Math.sin(angle) * player.speed;
+          
+          snakeTrail.unshift({ x: player.x, y: player.y });
+          const maxSegments = player.length * 4; 
+          if (snakeTrail.length > maxSegments) {
+            snakeTrail.pop();
+          }
+        }
+      }
+
+      // MENGGAMBAR SOAL / BOLA
+      bubbles.forEach(b => {
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, 20, 0, Math.PI * 2);
+        ctx.fillStyle = "#e67e22";
+        ctx.fill();
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = "#f1c40f";
+        ctx.stroke();
+
+        ctx.fillStyle = "#fff";
+        ctx.font = "bold 18px Comic Sans MS";
+        ctx.textAlign = "center";
+        ctx.fillText( b.id, b.x, b.y + 4);
+
+        if (!isModalOpen) {
+          const dist = Math.hypot(player.x - b.x, player.y - b.y);
+          if (dist < 32) triggerModal(b);
+        }
+      });
+
+      const step = 4;
+      for (let i = snakeTrail.length - 1; i >= 0; i -= step) {
+        const segment = snakeTrail[i];
+        const radius = Math.max(6, 14 - (i / snakeTrail.length) * 6);
+        
+        ctx.beginPath();
+        ctx.arc(segment.x, segment.y, radius, 0, Math.PI * 2);
+        ctx.fillStyle = "#a29bfe";
+        ctx.fill();
+        ctx.strokeStyle = "#6c5ce7";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.fillStyle = "#7d6608";
+        ctx.fillRect(segment.x - 2, segment.y - 16, 4, 6);
+        ctx.fillStyle = "#8e44ad"; 
+        ctx.fillRect(player.x - 18, player.y - 18, 36, 6);
+        ctx.fillStyle = "#a569bd"; 
+        ctx.fillRect(player.x - 10, player.y - 28, 20, 10);
+      }
+
+      ctx.beginPath();
+      ctx.arc(player.x, player.y, 16, 0, Math.PI * 2);
+      ctx.fillStyle = "#6c5ce7";
+      ctx.fill();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = "#ffffff";
+      ctx.stroke();
+
+      ctx.fillStyle = "#ffffff";
+      ctx.beginPath(); ctx.arc(player.x - 5, player.y - 4, 4, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(player.x + 5, player.y - 4, 4, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#2d3436";
+      ctx.beginPath(); ctx.arc(player.x - 5, player.y - 4, 2, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(player.x + 5, player.y - 4, 2, 0, Math.PI * 2); ctx.fill();
+
+      ctx.fillStyle = "#2d3436";
+      ctx.font = "bold 12px Comic Sans MS";
+      ctx.textAlign = "center";
+      ctx.fillText("🐍 " + player.name, player.x, player.y - 22);
+
+      document.getElementById('hud-length').innerText = player.length;
+      document.getElementById('hud-score').innerText = player.score;
+      document.getElementById('hud-correct').innerText = player.correct;
+
+      if (!isModalOpen) {
+        animId = requestAnimationFrame(loop);
+      }
+    }
+
+    let currentActiveBubble = null;
+
+    function triggerModal(bubble) {
+      isModalOpen = true;
+      currentActiveBubble = bubble;
+      
+      const modal = document.getElementById('modal-question');
+      document.getElementById('q-text').innerText = bubble.q.q;
+      
+      const optsGrid = document.getElementById('q-options');
+      optsGrid.innerHTML = '';
+      
+      bubble.q.opts.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'btn-ans';
+        btn.innerText = opt;
+        
+        btn.onclick = (e) => {
+          e.stopPropagation();
+          answerQuestion(opt, bubble.q.ans);
+        };
+
+        optsGrid.appendChild(btn);
+      });
+
+      modal.classList.remove('hidden');
+    }
+
+    function answerQuestion(selected, correct) {
+      document.getElementById('modal-question').classList.add('hidden');
+      
+      if (selected === correct) {
+        player.length += 3;
+        player.score += 10;
+        player.correct++;
+        showResultModal(true, "Jawaban Benar! Panjang ular +3 cm, poin +10.");
+      } else {
+        player.length = Math.max(3, player.length - 3);
+        showResultModal(false, "Jawaban Salah! Panjang ular -3 cm.");
+      }
+
+      bubbles = bubbles.filter(b => b !== currentActiveBubble);
+    }
+
+    function showResultModal(isCorrect, message) {
+      const modal = document.getElementById('modal-result');
+      const box = document.getElementById('result-box');
+      const icon = document.getElementById('result-icon');
+      const title = document.getElementById('result-title');
+      const msg = document.getElementById('result-msg');
+
+      if (isCorrect) {
+        box.style.borderColor = "#00b894";
+        icon.innerText = "🎉";
+        title.innerText = "Hebat! Jawaban Benar";
+        title.style.color = "#00b894";
+      } else {
+        box.style.borderColor = "#d63031";
+        icon.innerText = "❌";
+        title.innerText = "Sayang Sekali!";
+        title.style.color = "#d63031";
+      }
+
+      msg.innerText = message;
+      modal.classList.remove('hidden');
+    }
+
+    function closeResultModal() {
+      document.getElementById('modal-result').classList.add('hidden');
+      
+      if (bubbles.length === 0) {
+        triggerVictory();
+      } else {
+        isModalOpen = false;
+        loop();
+      }
+    }
+
+    function triggerVictory() {
+      isModalOpen = true;
+      
+      let rankText = "🥇 Juara 1 (Sangat Luar Biasa!)";
+      if (player.correct < questions.length) rankText = "🥈 Peringkat 2 (Bagus, Coba Lagi!)";
+
+      document.getElementById('vic-player').innerText = "Pemain: " + player.name;
+      document.getElementById('vic-score').innerText = player.score;
+      document.getElementById('vic-length').innerText = player.length + " cm";
+      document.getElementById('vic-correct').innerText = player.correct + "/" + questions.length;
+      document.getElementById('vic-rank').innerText = rankText;
+
+      document.getElementById('modal-victory').classList.remove('hidden');
+    }
+
+    function restartGame() {
+      document.getElementById('modal-victory').classList.add('hidden');
+      startGame();
+    }
+
+    function renderTeacherData() {
+      const data = [
+        { name: player.name, length: player.length, score: player.score, acc: Math.round((player.correct/questions.length)*100) + "%" },
+        { name: "Andi", length: 36, score: 120, acc: "90%" },
+        { name: "Budi", length: 33, score: 110, acc: "85%" }
+      ];
+      data.sort((a,b) => b.score - a.score);
+
+      document.getElementById('teacher-table-body').innerHTML = data.map((d, i) => `
+        <tr>
+          <td>${i + 1}</td>
+          <td><b>${d.name}</b></td>
+          <td>${d.length} cm</td>
+          <td>${d.score}</td>
+          <td>${d.acc}</td>
+        </tr>
+      `).join('');
+    }
+
+    function renderLeaderboard() {
+      const data = [
+        { name: player.name, length: player.length },
+        { name: "Citra", length: 42 },
+        { name: "Budi", length: 33 }
+      ];
+      data.sort((a,b) => b.length - a.length);
+
+      document.getElementById('leaderboard-list').innerHTML = data.map((d, i) => {
+        const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : '🥉';
+        return `<li>${medal} ${d.name} — ${d.length} cm</li>`;
+      }).join('');
+    }
+  </script>
+</body>
+</html>
