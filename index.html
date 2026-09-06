@@ -373,7 +373,7 @@
     .btn-menu:active { transform: translateY(2px); box-shadow: 0 2px 0 #b2bec3; }
     .btn-menu:hover { filter: brightness(1.05); }
     .btn-primary { background: #fdcb6e; color: #f5f6f7; box-shadow: 0 4px 0 #fdcb6e; }
-    .btn-success { background: #00b894; color: white; box-shadow: 0 4px 0 #008b6e; }
+    .btn-success { background: #00b894; color: white; box-shadow: none }
     .btn-teacher { background: #fdcb6e; color: white; box-shadow: none ; }
 
     /* KANVAS PAPAN KAYU */
@@ -573,62 +573,62 @@
 
     <div id="screen-teacher" class="view-screen wide">
       <h2>Panel Kontrol Guru</h2>
-      <div style="background: rgba(238, 245, 255, 0.8); padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 2px dashed #0984e3;">
-        <h3 style="color: #0984e3; margin-bottom: 5px;">Kode Room Aktif Saat Ini:</h3>
-        <span id="active-room-display" style="font-size: 2rem; font-weight: bold; color: #6c5ce7; letter-spacing: 3px;">MATH123</span>
+      <div style="background: rgb(78, 42, 3); padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 2px dashed #fdcb6e;">
+        <h3 style="color: #fdcb6e; margin-bottom: 5px;">Active Room Code :</h3>
+        <span id="active-room-display" style="font-size: 2rem; font-weight: bold; color: #fdcb6e; letter-spacing: 3px;">-</span>
       </div>
 
       <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-        <button class="btn-menu btn-success" onclick="createNewRoom()">🔑 Buat Kode Room Baru</button>
-        <button class="btn-menu btn-primary" onclick="showScreen('screen-manage-materi')">📚 Kelola Materi & Soal</button>
+        <button class="btn-menu btn-success" style="background-color: #fdcb6e; color: #2d3436;" onclick="createNewRoom()">Generate New Room Code</button>
+        <button class="btn-menu btn-primary" style="color: #2d3436; box-shadow: none;" onclick="showScreen('screen-manage-materi')">Manage Questions</button>
       </div>
 
-      <h3>📊 Data Nilai Siswa</h3>
+      <h3>Student Scores</h3>
       <table>
         <thead>
           <tr>
             <th>Rank</th>
-            <th>Nama siswa</th>
-            <th>Panjang Ular</th>
-            <th>Poin</th>
-            <th>Akurasi</th>
+            <th>Name</th>
+            <th>Snake Length</th>
+            <th>Score</th>
+            <th>Accuracy</th>
           </tr>
         </thead>
         <tbody id="teacher-table-body"></tbody>
       </table>
-      <button class="btn-menu" style="margin-top: 20px;" onclick="showScreen('screen-home')">⬅ Keluar ke Menu Utama</button>
+      <button class="btn-menu" style="margin-top: 20px; background-color: #fdcb6e; color: #2d3436;" onclick="showScreen('screen-home')">Go back to main menu</button>
     </div>
 
     <div id="screen-manage-materi" class="view-screen wide">
-      <h2>📚 Kelola Materi & Tambah Soal</h2>
+      <h2>Manage Question</h2>
       
-      <div style="background: rgba(241, 242, 246, 0.8); padding: 15px; border-radius: 12px; text-align: left; margin-bottom: 20px;">
-        <h4 style="margin-bottom: 10px; color: #0984e3;">➕ Tambah Soal Baru</h4>
+      <div style="background: rgb(78, 42, 3);border: 2px solid #fdcb6e; padding: 15px; border-radius: 12px; text-align: left; margin-bottom: 20px;">
+        <h4 style="margin-bottom: 10px; color: #0984e3;">Add New Question</h4>
         
         <div class="form-group">
-          <label>Pertanyaan Soal:</label>
+          <label>Question:</label>
           <input type="text" id="new-q-text" class="form-control" placeholder="Misal: Berapakah 5 + 5?">
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-          <div class="form-group"><label>Opsi A:</label><input type="text" id="opt-a" class="form-control"></div>
-          <div class="form-group"><label>Opsi B:</label><input type="text" id="opt-b" class="form-control"></div>
-          <div class="form-group"><label>Opsi C:</label><input type="text" id="opt-c" class="form-control"></div>
-          <div class="form-group"><label>Opsi D:</label><input type="text" id="opt-d" class="form-control"></div>
+          <div class="form-group"><label>A:</label><input type="text" id="opt-a" class="form-control"></div>
+          <div class="form-group"><label>B:</label><input type="text" id="opt-b" class="form-control"></div>
+          <div class="form-group"><label>C:</label><input type="text" id="opt-c" class="form-control"></div>
+          <div class="form-group"><label>D:</label><input type="text" id="opt-d" class="form-control"></div>
         </div>
 
         <div class="form-group">
-          <label>Jawaban Benar:</label>
-          <input type="text" id="opt-ans" class="form-control" placeholder="Jawaban yang benar">
+          <label>Correct Answer:</label>
+          <input type="text" id="opt-ans" class="form-control" placeholder="The correct Answer">
         </div>
 
-        <button class="btn-menu btn-success" onclick="addCustomQuestion()">💾 Simpan Soal</button>
+        <button class="btn-menu btn-success" onclick="addCustomQuestion()">Save Question</button>
       </div>
 
-      <h3>Daftar Soal Saat Ini</h3>
+      <h3>Current Question List</h3>
       <div id="question-list-display" style="text-align: left; margin-top: 10px; max-height: 200px; overflow-y: auto;"></div>
 
-      <button class="btn-menu" style="margin-top: 20px;" onclick="showScreen('screen-teacher')">⬅ Kembali ke Panel Guru</button>
+      <button class="btn-menu" style="margin-top: 20px;" onclick="showScreen('screen-teacher')">Back</button>
     </div>
 
     <div id="screen-leaderboard" class="view-screen">
@@ -651,9 +651,9 @@
   <!-- MODAL LOGIN GURU -->
   <div id="modal-teacher-login" class="modal hidden">
     <div class="modal-content" style="border-color: #fdcb6e;">
-      <h3 style="margin-bottom: 15px; color: #ffffff;">Login Guru</h3>
+      <h3 style="margin-bottom: 15px; color: #fdcb6e;">Teacher Login</h3>
       <div class="form-group">
-        <label for="teacher-pin-input">Masukkan PIN Keamanan Guru:</label>
+        <label for="teacher-pin-input">Enter Teacher Security PIN.</label>
         <input type="password" id="teacher-pin-input" class="form-control" placeholder="PIN: 1234" style="text-align: center; font-size: 1.2rem; letter-spacing: 4px;">
       </div>
       <p id="teacher-login-err" style="color: #d63031; font-size: 0.9rem; margin-bottom: 10px; display: none;">PIN Salah! Silakan coba PIN: 1234</p>
@@ -712,7 +712,7 @@
   </div>
 
   <script>
-    let activeRoomCode = "MATH123";
+    let activeRoomCode = "-";
     const teacherPIN = "1234";
     let isMusicPlaying = false;
     
@@ -1265,21 +1265,30 @@ canvas.ontouchmove = (e) => {
       startGame();
     }
 
-    function renderTeacherData() {
-      const data = [
-        { name: player.name, length: player.length, score: player.score, acc: Math.round((player.correct/questions.length)*100) + "%" },
-        { name: "Andi", length: 36, score: 120, acc: "90%" },
-        { name: "Budi", length: 33, score: 110, acc: "85%" }
-      ];
-      data.sort((a,b) => b.score - a.score);
+    function renderTeacherData(studentsData = null) {
+      const tbody = document.getElementById('teacher-table-body');
+  
+  // Jika belum ada data siswa dari Firebase, kosongkan tabel
+      if (!studentsData || Object.keys(studentsData).length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" style="text-align: center;">No students have joined yet</td>
+          </tr>
+        `;
+        return;
+      }
 
-      document.getElementById('teacher-table-body').innerHTML = data.map((d, i) => `
+  // Jika ada data dari Firebase, urutkan berdasarkan skor
+      const studentsList = Object.values(studentsData);
+      studentsList.sort((a, b) => (b.score || 0) - (a.score || 0));
+
+      tbody.innerHTML = studentsList.map((student, i) => `
         <tr>
           <td>${i + 1}</td>
-          <td><b>${d.name}</b></td>
-          <td>${d.length} cm</td>
-          <td>${d.score}</td>
-          <td>${d.acc}</td>
+          <td><b>${student.name || 'Tanpa Nama'}</b></td>
+          <td>${student.length || 15} cm</td>
+          <td>${student.score || 0}</td>
+          <td>${student.acc || '0%'}</td>
         </tr>
       `).join('');
     }
@@ -1320,7 +1329,7 @@ canvas.ontouchmove = (e) => {
       db.ref('rooms/' + activeRoomCode + '/students').once('value', (snapshot) => {
         leaderboardList.innerHTML = "";
         if (!snapshot.exists()) {
-          leaderboardList.innerHTML = "<li>Belum ada data nilai di room ini.</li>";
+          leaderboardList.innerHTML = "<li>-</li>";
           return;
         }
 
