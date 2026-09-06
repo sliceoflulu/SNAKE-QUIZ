@@ -5,6 +5,88 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quiz Snake</title>
   <style>
+    
+    
+    .icon-img {
+      width: 30px;         /* Lebar gambar */
+      height: 30px;        /* Tinggi gambar */
+      object-fit: contain; /* Agar gambar tidak gepeng */
+      vertical-align: middle; /* Supaya sejajar dengan teks */
+      margin-right: 2px;   /* Jarak antara gambar dan teks */
+    }
+    .btn-icon {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+    }
+
+  /* Paksa modal/pop-up selalu tampil di lapisan paling atas */
+    .modal, #modal-how-to-play, #howToPlayModal {
+      z-index: 99999 !important;
+    }
+
+/* Pastikan overlay latar gelap modal juga menutup seluruh layar */
+    .modal-overlay, .modal-backdrop {
+      z-index: 99998 !important;
+    }
+    /* Sidebar Melayang di Kanan */
+    .right-sidebar {
+      position: fixed;
+      right: 15px;
+      top: 100px;
+      display: flex;
+      flex-direction: column; /* Menurun ke bawah */
+      gap: 12px;
+      z-index: 9999; /* Agar selalu melayang di atas background/canvas */
+    }
+
+/* Styling Tombol Sidebar */
+    .sidebar-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #fdcb6e;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      padding: 10px 14px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .sidebar-btn:hover {
+      transform: translateX(-5px); /* Efek geser dikit ke kiri saat di-hover */
+      background: #ffffff;
+    }
+
+    .sidebar-btn.btn-teacher {
+      background: #fdcb6e;
+     color: #2d3436;
+    }
+
+    .sidebar-btn .icon {
+      font-size: 1.2rem;
+    }
+
+/* Penyesuaian Responsif di Layar HP */
+    @media (max-width: 600px) {
+    .right-sidebar {
+      right: 8px;
+      }
+  
+  /* Di HP hanya munculkan ikon saja (seperti sidebar Gemini) biar enggak makan tempat */
+    .sidebar-btn .label {
+      display: none;
+      }
+  
+    .sidebar-btn {
+      padding: 10px;
+      border-radius: 50%; /* Bikin tombol berbentuk lingkaran di HP */
+      }
+    }
     .game-hud {
       display: flex;
       justify-content: center;
@@ -25,10 +107,10 @@
       gap: 5px;
     }
     :root {
-      --card-bg: rgba(255, 255, 255, 0.95);
-      --text-color: #2d3436;
-      --border-color: #dfe6e9;
-      --btn-bg: #dfe6e9;
+      --card-bg: rgba(78, 42, 3, 0.498);
+      --text-color: #ffffff;
+      --border-color: #fdcb6e;
+      --btn-bg: #fdcb6e;
       --btn-text: #2d3436;
       --accent-yellow: #fdcb6e;
     }
@@ -44,7 +126,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif; }
     
     body { 
-      /* LATAR BELAKANG MENGGUNAKAN FOTO ESTETIK (Pemandangan Alam/Gunung HD) */
+      /* LATAR BELAKANG MENGGUNAKAN FOTO  */
       background: url('https://i.pinimg.com/736x/ac/a7/b2/aca7b2981966b5407e937f2a7f1c9910.jpg') no-repeat center center fixed;
       
       background-size: 100% 100% !important;
@@ -71,7 +153,7 @@
     #loading-screen {
       position: fixed;
       top: 0; left: 0; width: 100vw; height: 100vh;
-      background: linear-gradient(135deg, #0984e3, #6c5ce7);
+      background: linear-gradient(135deg, rgb(78,42,3), #d3910c);
       z-index: 999999;
       display: flex;
       flex-direction: column;
@@ -163,7 +245,7 @@
     .progress-bar-fill {
       height: 100%;
       width: 0%;
-      background: linear-gradient(90deg, #ffbe76, #ff7979, #badc58, #00b894);
+      background: linear-gradient(90deg, #ffbe76, #ff7979, #dcb258, #b86e00);
       background-size: 300% 100%;
       border-radius: 50px;
       box-shadow: 0 0 15px rgba(253, 203, 110, 0.9);
@@ -200,11 +282,11 @@
       justify-content: space-between; 
       align-items: center; 
       padding: 15px 30px; 
-      background: rgba(255, 255, 255, 0.95); 
+      background: rgb(78, 42, 3); 
       border-bottom: 4px solid var(--accent-yellow); 
       box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     }
-    .logo { font-size: 1.8rem; font-weight: bold; color: #6c5ce7; display: flex; align-items: center; gap: 8px; }
+    .logo { font-size: 1.8rem; font-weight: bold; color: #fdcb6e; display: flex; align-items: center; gap: 8px; }
     
     .header-controls { display: flex; gap: 10px; align-items: center; }
     .btn-dark-toggle, .btn-music-toggle { 
@@ -229,7 +311,7 @@
       backdrop-filter: blur(8px);
       padding: 30px; 
       border-radius: 24px; 
-      border: 4px solid #ffffff; 
+      border: 4px solid #fdcb6e; 
       box-shadow: 0 15px 35px rgba(0,0,0,0.3); 
       text-align: center; 
       animation: fadeIn 0.4s ease-out;
@@ -272,7 +354,7 @@
       transition: border-color 0.2s;
     }
     body.dark-mode .form-control { background: rgba(45,52,54,0.8); color: white; }
-    .form-control:focus { outline: none; border-color: #0984e3; }
+    .form-control:focus { outline: none; border-color: #ffffff; }
 
     .menu-buttons { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
     .btn-menu { 
@@ -290,9 +372,9 @@
     }
     .btn-menu:active { transform: translateY(2px); box-shadow: 0 2px 0 #b2bec3; }
     .btn-menu:hover { filter: brightness(1.05); }
-    .btn-primary { background: #0984e3; color: white; box-shadow: 0 4px 0 #0652dd; }
+    .btn-primary { background: #fdcb6e; color: #f5f6f7; box-shadow: 0 4px 0 #fdcb6e; }
     .btn-success { background: #00b894; color: white; box-shadow: 0 4px 0 #008b6e; }
-    .btn-teacher { background: #6c5ce7; color: white; box-shadow: 0 4px 0 #4834d4; }
+    .btn-teacher { background: #fdcb6e; color: white; box-shadow: none ; }
 
     /* KANVAS PAPAN KAYU */
     #gameCanvas { 
@@ -307,7 +389,7 @@
 }
 
 /* Sesuaikan padding container di layar HP */
-@media (max-width: 600px) {
+    @media (max-width: 600px) {
   .view-screen {
     padding: 15px;
     width: 95%;
@@ -333,7 +415,7 @@
     }
 
     .modal-content { 
-      background: var(--card-bg); 
+      background: #2b1d0c;
       padding: 25px; 
       border-radius: 20px; 
       width: 90%; 
@@ -357,9 +439,41 @@
     }
 
     .hidden { display: none !important; }
+  * {
+    font-family: 'Poppins', sans-serif !important;
+  }
+  /* Memaksa semua judul h2/h3 di dalam modal menjadi warna kuning */
+    .modal-content h2,
+    .modal-content h3 {
+      color: #ffd700 !important;
+    }
+    
   </style>
+
 </head>
 <body>
+
+  <!-- 1. TARUH FIREBASE SDK & INISIALISASI DI ATAS SINI -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDEy87yQtAbFcClQhwMqsRz429sxonX-tE",
+      authDomain: "quiz-snake01.firebaseapp.com",
+      databaseURL: "https://quiz-snake01-default-rtdb.asia-southeast1.firebasedatabase.app", // Wajib ada!
+      projectId: "quiz-snake01",
+      storageBucket: "quiz-snake01.firebasestorage.app",
+      messagingSenderId: "896818294732",
+      appId: "1:896818294732:web:34b78b0c03f79954197769",
+      measurementId: "G-XR36MGTSSG"
+    };
+
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.database();
+    console.log("Firebase terhubung:", db);
+  </script>
 
   <!-- AUDIO LATAR BELAKANG (BGM) -->
   <audio id="bgm" loop>
@@ -386,6 +500,7 @@
   </div>
 
   <header>
+  
     <div class="logo">
       <svg class="mascot-snake" style="width:32px; height:32px; animation-duration:2s;" viewBox="0 0 100 100">
         <path d="M20,50 Q40,20 60,50 T100,50" fill="none" stroke="#00b894" stroke-width="15" stroke-linecap="round"/>
@@ -394,11 +509,30 @@
       Snake Quiz
     </div>
     <div class="header-controls">
-      <button class="btn-music-toggle" id="btn-music" onclick="toggleMusic()">🔊 Musik: ON</button>
-      <button class="btn-dark-toggle" onclick="toggleDarkMode()">🌙 Dark Mode</button>
+      <button class="btn-music-toggle" id="btn-music" onclick="toggleMusic()">
+        <img src="asset/3.png" class="icon-img" alt="Music"> Music: ON
+      </button>
+
+      <button class="btn-dark-toggle" onclick="toggleDarkMode()">
+        <img src="asset/1.png" class="icon-img" alt="Dark Mode"> Dark Mode
+      </button>
     </div>
   </header>
+    <!-- Floating Sidebar Kanan -->
+    <div class="right-sidebar" >
 
+      <button class="sidebar-btn" onclick="openHowToPlayModal()">
+        <img src="asset/book.png" alt="Book" class="btn-icon"> How to play
+      </button>
+  
+      <button class="sidebar-btn" onclick="showScreen('screen-leaderboard')">
+        <img src="asset/5.png" alt="Leaderboard" class="btn-icon"> Leaderboard
+      </button>
+  
+      <button class="sidebar-btn btn-teacher" onclick="openTeacherLogin()">
+        <img src="asset/2.png" alt="Teacher Access" class="btn-icon"> Teacher Access
+      </button>
+    </div>
   <main>
     <div id="screen-home" class="view-screen active">
       <div class="mascot-container">
@@ -409,25 +543,22 @@
           <path d="M105,65 Q115,65 118,60 M105,65 Q115,65 118,70" fill="none" stroke="#d63031" stroke-width="3" stroke-linecap="round"/>
         </svg>
       </div>
-
-      <h2>Selamat Datang, Petualang!</h2>
+      
+      <h2>Welcome, Adventure!</h2>
 
       <div class="form-group">
         <label for="player-name">Username:</label>
-        <input type="text" id="player-name" class="form-control" placeholder="Masukkan nama..." value=" ">
+        <input type="text" id="player-name" class="form-control" placeholder="Enter Your Name" value="">
       </div>
 
       <div class="form-group">
         <label for="room-code">IDroom :</label>
-        <input type="text" id="room-code" class="form-control" style="text-transform: uppercase; letter-spacing: 2px; font-weight: bold;" placeholder="Masukkan Kode Room" value=" ">
+        <input type="text" id="room-code" class="form-control" placeholder="Enter Room Code" value="">
       </div>
 
-      <div class="menu-buttons">
-        <button class="btn-menu btn-primary" onclick="validateAndStartGame()">🎮 START GAME</button>
-        <button class="btn-menu" onclick="openHowToPlayModal()">📖 Cara Bermain</button>
-        <button class="btn-menu" onclick="showScreen('screen-leaderboard')">🏆 Leaderboard</button>
-        <button class="btn-menu btn-teacher" onclick="openTeacherLogin()">👨‍🏫 Akses Guru</button>
-      </div>
+      <div class="menu-action-container">
+        <button class="btn-menu btn-primary" onclick="validateAndStartGame()">START GAME</button>
+      </div>  
     </div>
 
     <div id="screen-game" class="view-screen wide">
@@ -441,7 +572,7 @@
     </div>
 
     <div id="screen-teacher" class="view-screen wide">
-      <h2>👨‍🏫 Panel Kontrol Guru</h2>
+      <h2>Panel Kontrol Guru</h2>
       <div style="background: rgba(238, 245, 255, 0.8); padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 2px dashed #0984e3;">
         <h3 style="color: #0984e3; margin-bottom: 5px;">Kode Room Aktif Saat Ini:</h3>
         <span id="active-room-display" style="font-size: 2rem; font-weight: bold; color: #6c5ce7; letter-spacing: 3px;">MATH123</span>
@@ -457,7 +588,7 @@
         <thead>
           <tr>
             <th>Rank</th>
-            <th>Nama wa</th>
+            <th>Nama siswa</th>
             <th>Panjang Ular</th>
             <th>Poin</th>
             <th>Akurasi</th>
@@ -501,9 +632,9 @@
     </div>
 
     <div id="screen-leaderboard" class="view-screen">
-      <h2>🏆 Leaderboard Kelas</h2>
+      <h2>🏆 Class Leaderboard</h2>
       <ol id="leaderboard-list" style="text-align: left; padding-left: 20px; margin-bottom: 20px; font-weight: bold;"></ol>
-      <button class="btn-menu" onclick="showScreen('screen-home')">⬅ Kembali</button>
+      <button class="btn-menu" onclick="showScreen('screen-home')">Back</button>
     </div>
   </main>
 
@@ -519,16 +650,16 @@
 
   <!-- MODAL LOGIN GURU -->
   <div id="modal-teacher-login" class="modal hidden">
-    <div class="modal-content" style="border-color: #6c5ce7;">
-      <h3 style="margin-bottom: 15px; color: #6c5ce7;">👨‍🏫 Login Guru</h3>
+    <div class="modal-content" style="border-color: #fdcb6e;">
+      <h3 style="margin-bottom: 15px; color: #ffffff;">Login Guru</h3>
       <div class="form-group">
         <label for="teacher-pin-input">Masukkan PIN Keamanan Guru:</label>
         <input type="password" id="teacher-pin-input" class="form-control" placeholder="PIN: 1234" style="text-align: center; font-size: 1.2rem; letter-spacing: 4px;">
       </div>
       <p id="teacher-login-err" style="color: #d63031; font-size: 0.9rem; margin-bottom: 10px; display: none;">PIN Salah! Silakan coba PIN: 1234</p>
       <div style="display: flex; gap: 10px;">
-        <button class="btn-menu btn-teacher" onclick="verifyTeacherPin()">Masuk</button>
-        <button class="btn-menu" onclick="closeTeacherLogin()">Batal</button>
+        <button class="btn-menu btn-teacher" onclick="verifyTeacherPin()">Login</button>
+        <button class="btn-menu" onclick="closeTeacherLogin()">Cancel</button>
       </div>
     </div>
   </div>
@@ -537,7 +668,7 @@
     <div class="modal-content" style="text-align: left;">
       <h3 id="info-title" style="margin-bottom: 15px; color: #0984e3; text-align: center;">Judul</h3>
       <div id="info-body" style="font-size: 0.95rem; line-height: 1.6; margin-bottom: 20px;"></div>
-      <button class="btn-menu btn-primary" onclick="closeInfoModal()">Paham 👍</button>
+      <button class="btn-menu btn-primary" onclick="closeInfoModal()">OK</button>
     </div>
   </div>
 
@@ -584,6 +715,7 @@
     let activeRoomCode = "MATH123";
     const teacherPIN = "1234";
     let isMusicPlaying = false;
+    
 
     function showAlert(msg, title = "Pemberitahuan", icon = "🔑") {
       document.getElementById('alert-title').innerText = title;
@@ -591,23 +723,114 @@
       document.getElementById('alert-icon').innerText = icon;
       document.getElementById('modal-alert').classList.remove('hidden');
     }
+    function createRoom() {
+  // Generate kode unik 6 karakter (misal: MATH12)
+      const roomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+  // Simpan ke Firebase
+      db.ref('rooms/' + roomCode).set({
+        status: 'waiting',
+        createdAt: Date.now()
+    }).then(() => {
+      alert("Kode Room Kamu: " + roomCode);
+      showWaitingRoom(roomCode);
+    });
+    }
+    function listenTeacherData(roomCode) {
+      db.ref('rooms/' + roomCode + '/students').on('value', (snapshot) => {
+        // Logika terima data siswa
+      });
+    }
+    function showWaitingRoom(roomCode) {
+  // Pantau siswa yang bergabung
+      db.ref('rooms/' + roomCode + '/students').on('value', (snapshot) => {
+        const students = snapshot.val() || {};
+    // Render/tampilkan nama-nama siswa ke UI Waiting Room Guru
+        renderStudentList(students);
+      });
+    }
+    function joinRoom(roomCode, studentName) {
+      const studentId = "student_" + Date.now(); // ID unik siswa
 
+  // Cek dulu apakah room-nya ada
+      db.ref('rooms/' + roomCode).once('value', (snapshot) => {
+        if (snapshot.exists()) {
+      // Masukkan data siswa ke room tersebut
+        db.ref('rooms/' + roomCode + '/students/' + studentId).set({
+          name: studentName,
+          score: 0
+        });
+
+      // Pantau status game (menunggu Guru pencet 'START')
+        listenGameStatus(roomCode);
+        } else {
+          alert("Kode Room tidak ditemukan!");
+        }
+      });
+    }
+    // [SISI GURU] Ubah status room jadi "playing"
+    function startGame(roomCode) {
+      db.ref('rooms/' + roomCode).update({
+        status: 'playing'
+      });
+    }
+
+// [SISI SISWA] Dengarkan perubahan status game
+    function listenGameStatus(roomCode) {
+      db.ref('rooms/' + roomCode + '/status').on('value', (snapshot) => {
+        const status = snapshot.val();
+        if (status === 'playing') {
+      // Sembunyikan Waiting Room, Munculkan Game Canvas Snake!
+          startSnakeGameUI();
+        }
+      });
+    }
+    function updateStudentScore(roomCode, studentId, newScore) {
+      db.ref('rooms/' + roomCode + '/students/' + studentId).update({
+        score: newScore
+      });
+    }
+
+// [SISI GURU & SISWA] Tampilkan Leaderboard Realtime
+    function listenLeaderboard(roomCode) {
+      db.ref('rooms/' + roomCode + '/students')
+        .orderByChild('score') // Urutkan berdasarkan skor
+        .on('value', (snapshot) => {
+          let leaderboardData = [];
+          snapshot.forEach((child) => {
+            leaderboardData.push(child.val());
+          });
+      
+      // Balik urutan agar skor tertinggi ada di atas (Rank 1)
+          leaderboardData.reverse();
+          renderLeaderboardUI(leaderboardData);
+        });
+    }
+    function endGame(roomCode) {
+      db.ref('rooms/' + roomCode).update({
+        status: 'finished'
+      });
+  // Tampilkan layar Victory / Podium Juara
+    }
     function closeCustomAlert() {
       document.getElementById('modal-alert').classList.add('hidden');
     }
 
     // KONTROL MUSIK LATAR BELAKANG
+    let isMusicOn = true;
+
     function toggleMusic() {
+      const musicBtn = document.getElementById('btn-music');
+      isMusicOn = !isMusicOn;
       const bgm = document.getElementById('bgm');
-      const btn = document.getElementById('btn-music');
-      if (isMusicPlaying) {
-        bgm.pause();
-        isMusicPlaying = false;
-        btn.innerText = "🔇 Musik: OFF";
+
+      if (isMusicOn) {
+    // Tampilan saat Musik ON
+        bgm.play();
+        musicBtn.innerHTML = `<img src="asset/3.png" class="icon-img"> Music: ON`;
       } else {
-        bgm.play().catch(e => console.log("Audio play blocked"));
-        isMusicPlaying = true;
-        btn.innerText = "🔊 Musik: ON";
+    // Tampilan saat Musik OFF
+        bgm.pause();
+        musicBtn.innerHTML = `<img src="asset/6.png" class="icon-img"> Music: OFF`;
       }
     }
 
@@ -635,11 +858,11 @@
             bgm.volume = 0.4;
             bgm.play().then(() => {
               isMusicPlaying = true;
-              document.getElementById('btn-music').innerText = "🔊 Musik: ON";
+              document.getElementById('btn-music').innerHTML = `<img src="asset/3.png" class="icon-img"> Music: ON`;
             }).catch(() => {
               // Jika diblokir browser, pengguna bisa mengaktifkannya lewat tombol musik di atas
               isMusicPlaying = false;
-              document.getElementById('btn-music').innerText = "🔇 Musik: OFF";
+              document.getElementById('btn-music').innerHTML = `<img src="asset/6.png" class="icon-img"> Music: OFF`;
             });
 
           }, 400);
@@ -668,12 +891,23 @@
 
     function validateAndStartGame() {
       const inputCode = document.getElementById('room-code').value.trim().toUpperCase();
-      if (inputCode !== activeRoomCode) {
-        showAlert("Kode Room tidak cocok dengan kode aktif guru (" + activeRoomCode + ")!", "Peringatan", "⚠️");
+      const inputName = document.getElementById('player-name').value.trim();
+
+      if (!inputName || !inputCode) {
+        showAlert("Enter your username and room ID first!", "Warning!", "⚠️");
         return;
       }
-      showScreen('screen-game');
-    }
+
+  // Cek ketersediaan room di Firebase Online
+      db.ref('rooms/' + inputCode).once('value', (snapshot) => {
+        if (snapshot.exists()) {
+          activeRoomCode = inputCode;
+          showScreen('screen-game');
+        } else {
+          showAlert("Kode Room (" + inputCode + ") tidak ditemukan!", "Room Gagal Dimasuki", "❌");
+        }
+      });
+   }
 
     function openTeacherLogin() {
       document.getElementById('teacher-pin-input').value = '';
@@ -696,13 +930,24 @@
     }
 
     function createNewRoom() {
-      const randomNum = Math.floor(1000 + Math.random() * 9000);
-      activeRoomCode = "MATH" + randomNum;
-      document.getElementById('active-room-display').innerText = activeRoomCode;
-      document.getElementById('room-code').value = activeRoomCode;
-      showAlert("Kode Room Baru Berhasil Dibuat: " + activeRoomCode, "Berhasil", "🔑");
+  // Bikin kode unik agar tidak bertabrakan dengan room lain
+      const randomId = "MATH-" + Date.now().toString().slice(-3) + Math.floor(10 + Math.random() * 90);
+      activeRoomCode = randomId;
+  
+  // Simpan room baru ke Firebase
+      db.ref('rooms/' + activeRoomCode).set({
+        createdAt: Date.now(),
+        status: "active"
+      }).then(() => {
+        document.getElementById('active-room-display').innerText = activeRoomCode;
+        document.getElementById('room-code').value = activeRoomCode;
+        showAlert("Kode Room Baru Berhasil Dibuat: " + activeRoomCode, "Berhasil", "🔑");
+    
+    // Dengarkan data siswa yang masuk ke room ini
+        listenTeacherData(activeRoomCode);
+      });
     }
-
+    
     function addCustomQuestion() {
       const q = document.getElementById('new-q-text').value.trim();
       const a = document.getElementById('opt-a').value.trim();
@@ -740,14 +985,15 @@
     }
 
     function openHowToPlayModal() {
-      document.getElementById('info-title').innerText = "📖 Cara Bermain";
+      document.getElementById('info-title').innerText = "How to play";
       document.getElementById('info-body').innerHTML = `
         <ul style="padding-left: 20px;">
-          <li><b>Kode Room:</b> Masukkan kode room yang diberikan oleh guru.</li>
-          <li><b>Arahkan Ular:</b> Gerakkan kursor mouse untuk mengarahkan kepala ular.</li>
-          <li><b>Makan Bola Soal:</b> Dekati bola bernomor 🔵 untuk menjawab soal.</li>
-          <li><b>Jawab Benar:</b> Ular bertambah panjang <b>+3 cm</b> & dapat <b>+10 poin</b>.</li>
-          <li><b>Menang:</b> Selesaikan seluruh soal yang ada di arena!</li>
+          <li><b>Kode Room:</b> Masukkan kode room yang diberikan oleh guru.<br><i><b>Room Code:</b> Enter the room code provided by the teacher.</i></li>
+          <li><b>Arahkan Ular:</b> Gerakkan kursor mouse untuk mengarahkan kepala ular.<br><i><b>Control the Snake:</b>Move your mouse cursor to control the snake's head.</i></li>
+          <li><b>Makan Bola Soal:</b> Dekati bola bernomor untuk menjawab soal.<br><i>Eat The Question Ball:</b> Approach a numbered ball to answer the question.</i></li>
+          <li><b>Jawab Benar:</b> Ular bertambah panjang <b>+3 cm</b> & dapat <b>+10 poin</b>.<br><i><b>Answer correctly:</b>The snake grows by +3 cm and you earn +10 point.</i></li>
+          <li><b>Menang:</b> Selesaikan seluruh soal yang ada di arena!<br><i><b>Win:</b>Complate all the quesstion in the arena!</i></li>
+          
         </ul>
       `;
       document.getElementById('modal-info').classList.remove('hidden');
@@ -1000,7 +1246,8 @@ canvas.ontouchmove = (e) => {
 
     function triggerVictory() {
       isModalOpen = true;
-      
+      saveScoreToFirebase();
+
       let rankText = "🥇 Juara 1 (Sangat Luar Biasa!)";
       if (player.correct < questions.length) rankText = "🥈 Peringkat 2 (Bagus, Coba Lagi!)";
 
@@ -1050,6 +1297,74 @@ canvas.ontouchmove = (e) => {
         return `<li>${medal} ${d.name} — ${d.length} cm</li>`;
       }).join('');
     }
+
+    // Simpan Nilai Siswa ke Path Room Guru
+    function saveScoreToFirebase() {
+      if (!activeRoomCode) return;
+      const studentKey = player.name.replace(/\s+/g, '_') + '_' + Math.floor(100 + Math.random() * 900);
+
+      db.ref('rooms/' + activeRoomCode + '/students/' + studentKey).set({
+        name: player.name,
+        score: player.score,
+        length: player.length,
+        correct: player.correct,
+        updatedAt: Date.now()
+      });
+    }
+
+// Render Leaderboard Khusus Room Aktif
+    function renderLeaderboard() {
+      const leaderboardList = document.getElementById('leaderboard-list');
+      leaderboardList.innerHTML = "<li>Membaca data...</li>";
+
+      db.ref('rooms/' + activeRoomCode + '/students').once('value', (snapshot) => {
+        leaderboardList.innerHTML = "";
+        if (!snapshot.exists()) {
+          leaderboardList.innerHTML = "<li>Belum ada data nilai di room ini.</li>";
+          return;
+        }
+
+        const data = [];
+        snapshot.forEach(child => { data.push(child.val()); });
+        data.sort((a, b) => b.score - a.score);
+
+        data.forEach((d, i) => {
+          const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '👤';
+          leaderboardList.innerHTML += `<li>${medal} ${d.name} — ${d.score} Poin (${d.length} cm)</li>`;
+        });
+      });
+    }
+
+// Update Tabel di Layar Guru secara Live (Realtime)
+    function listenTeacherData(roomCode) {
+      db.ref('rooms/' + roomCode + '/students').on('value', (snapshot) => {
+      const tbody = document.getElementById('teacher-table-body');
+      tbody.innerHTML = "";
+
+      if (!snapshot.exists()) {
+        tbody.innerHTML = "<tr><td colspan='5'>Belum ada siswa yang masuk/menjawab.</td></tr>";
+        return;
+      }
+
+      const data = [];
+      snapshot.forEach(child => { data.push(child.val()); });
+      data.sort((a, b) => b.score - a.score);
+
+      data.forEach((d, i) => {
+        const acc = Math.round((d.correct / questions.length) * 100) + "%";
+        tbody.innerHTML += `
+          <tr>
+            <td>${i + 1}</td>
+            <td><b>${d.name}</b></td>
+            <td>${d.length} cm</td>
+            <td>${d.score}</td>
+            <td>${acc}</td>
+          </tr>
+        `;
+      });
+    });
+  }
+
   </script>
 </body>
 </html>
