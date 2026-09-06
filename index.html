@@ -63,8 +63,7 @@
     }
 
     .sidebar-btn.btn-teacher {
-      background: #fdcb6e;
-     color: #2d3436;
+      color: #2d3436;
     }
 
     .sidebar-btn .icon {
@@ -563,9 +562,9 @@
 
     <div id="screen-game" class="view-screen wide">
       <div class="game-hud">
-        <div class="hud-badge">📏 <span id="hud-length">15</span> cm</div>
-        <div class="hud-badge">⭐ <span id="hud-score">0</span> Poin</div>
-        <div class="hud-badge">✅ <span id="hud-correct">0</span> Benar</div>
+        <div class="hud-badge"><span id="hud-length">15</span> cm</div>
+        <div class="hud-badge"><span id="hud-score">0</span> Poin</div>
+        <div class="hud-badge"><span id="hud-correct">0</span> Benar</div>
       </div>
       <canvas id="gameCanvas" width="700" height="400"></canvas>
       <button class="btn-menu" style="margin-top: 15px;" onclick="showScreen('screen-home')">❌ Keluar Permainan</button>
@@ -580,7 +579,7 @@
 
       <div style="display: flex; gap: 10px; margin-bottom: 20px;">
         <button class="btn-menu btn-success" style="background-color: #fdcb6e; color: #2d3436;" onclick="createNewRoom()">Generate New Room Code</button>
-        <button class="btn-menu btn-primary" style="color: #2d3436; box-shadow: none;" onclick="showScreen('screen-manage-materi')">Manage Questions</button>
+        <button class="btn-menu btn-primary" style="color: #2d3436; box-shadow: #ffffff;" onclick="showScreen('screen-manage-materi')">Manage Questions</button>
       </div>
 
       <h3>Student Scores</h3>
@@ -603,7 +602,7 @@
       <h2>Manage Question</h2>
       
       <div style="background: rgb(78, 42, 3);border: 2px solid #fdcb6e; padding: 15px; border-radius: 12px; text-align: left; margin-bottom: 20px;">
-        <h4 style="margin-bottom: 10px; color: #0984e3;">Add New Question</h4>
+        <h4 style="margin-bottom: 10px; color: #ffffff;">Add New Question</h4>
         
         <div class="form-group">
           <label>Question:</label>
@@ -622,17 +621,22 @@
           <input type="text" id="opt-ans" class="form-control" placeholder="The correct Answer">
         </div>
 
-        <button class="btn-menu btn-success" onclick="addCustomQuestion()">Save Question</button>
+        <button class="btn-menu" style="background-color: #fdcb6e; color: #2d3436; box-shadow: none;" onclick="saveQuestion()">Save Question</button>
       </div>
 
       <h3>Current Question List</h3>
+        <div id="teacher-question-list">
+        <div style="text-align: center; color: #ffffff; padding: 15px; font-weight: none;">
+          No questions added yet.
+        </div>
+      </div>
       <div id="question-list-display" style="text-align: left; margin-top: 10px; max-height: 200px; overflow-y: auto;"></div>
-
-      <button class="btn-menu" style="margin-top: 20px;" onclick="showScreen('screen-teacher')">Back</button>
+        
+      <button class="btn-menu" style="margin-top: 20px; background-color: #fdcb6e; color: #2d3436; box-shadow: none;" onclick="showScreen('screen-home')">Back</button>
     </div>
 
     <div id="screen-leaderboard" class="view-screen">
-      <h2>🏆 Class Leaderboard</h2>
+      <h2> Class Leaderboard</h2>
       <ol id="leaderboard-list" style="text-align: left; padding-left: 20px; margin-bottom: 20px; font-weight: bold;"></ol>
       <button class="btn-menu" onclick="showScreen('screen-home')">Back</button>
     </div>
@@ -640,10 +644,10 @@
 
   <!-- MODAL NOTIFIKASI KUSTOM -->
   <div id="modal-alert" class="modal hidden">
-    <div class="modal-content" style="border-color: #0984e3;">
+    <div class="modal-content" style="border-color: #fdcb6e;">
       <div id="alert-icon" style="font-size: 3rem; margin-bottom: 5px;">🔔</div>
       <h3 id="alert-title" style="margin-bottom: 10px; color: #0984e3;">Pemberitahuan</h3>
-      <p id="alert-msg" style="font-size: 1rem; margin-bottom: 20px; font-weight: bold; color: #2d3436; line-height: 1.5;"></p>
+      <p id="alert-msg" style="font-size: 1rem; margin-bottom: 20px; font-weight: bold; color: #f4f1f1; line-height: 1.5;"></p>
       <button class="btn-menu btn-primary" onclick="closeCustomAlert()">Oke</button>
     </div>
   </div>
@@ -656,7 +660,7 @@
         <label for="teacher-pin-input">Enter Teacher Security PIN.</label>
         <input type="password" id="teacher-pin-input" class="form-control" placeholder="PIN: 1234" style="text-align: center; font-size: 1.2rem; letter-spacing: 4px;">
       </div>
-      <p id="teacher-login-err" style="color: #d63031; font-size: 0.9rem; margin-bottom: 10px; display: none;">PIN Salah! Silakan coba PIN: 1234</p>
+      <p id="teacher-login-err" style="color: #d63031; font-size: 0.9rem; margin-bottom: 10px; display: none;">Invalid PIN! Please try entering PIN: 1234</p>
       <div style="display: flex; gap: 10px;">
         <button class="btn-menu btn-teacher" onclick="verifyTeacherPin()">Login</button>
         <button class="btn-menu" onclick="closeTeacherLogin()">Cancel</button>
@@ -674,7 +678,7 @@
 
   <div id="modal-question" class="modal hidden">
     <div class="modal-content">
-      <h3 style="margin-bottom: 10px; color:#6c5ce7;">❓ Soal Matematika</h3>
+      <h3 style="margin-bottom: 10px; color:#6c5ce7;">Question</h3>
       <p id="q-text" style="font-size: 1.1rem; font-weight: bold; margin-bottom: 15px;">Soal...</p>
       <div id="q-options" class="opts-grid"></div>
     </div>
@@ -683,30 +687,30 @@
   <div id="modal-result" class="modal hidden">
     <div id="result-box" class="modal-content">
       <div id="result-icon" style="font-size: 3.5rem; margin-bottom: 10px;">🎉</div>
-      <h3 id="result-title" style="margin-bottom: 10px;">Jawaban Benar!</h3>
-      <p id="result-msg" style="font-size: 1.05rem; margin-bottom: 20px; font-weight: bold; color: #636e72;">Panjang ular +3 cm</p>
-      <button class="btn-menu btn-primary" onclick="closeResultModal()">Lanjutkan 🐍</button>
+      <h3 id="result-title" style="margin-bottom: 10px;">Correct Answer!</h3>
+      <p id="result-msg" style="font-size: 1.05rem; margin-bottom: 20px; font-weight: bold; color: #636e72;">snake lenght +3 cm,+10 points</p>
+      <button class="btn-menu btn-primary" onclick="closeResultModal()">Next</button>
     </div>
   </div>
 
   <div id="modal-victory" class="modal hidden">
     <div class="modal-content" style="border-width: 5px; border-color: #fdcb6e;">
       <div style="font-size: 4rem; margin-bottom: 5px;">🏆</div>
-      <h2 style="color: #d63031; margin-bottom: 5px;">SEMUA SOAL TERJAWAB!</h2>
-      <p style="font-size: 1.1rem; font-weight: bold; color: #6c5ce7;" id="vic-player">Pemain: Siswa SMP</p>
+      <h2 style="color: #d63031; margin-bottom: 5px;">GREAT JOB!</h2>
+      <p style="font-size: 1.1rem; font-weight: bold; color: #ffff;" id="vic-player">Pemain: Siswa SMP</p>
       
-      <div style="background: rgba(241, 242, 246, 0.9); padding: 12px; border-radius: 12px; margin: 10px 0; display: flex; justify-content: space-around; font-weight: bold;">
-        <div>⭐ Poin: <span id="vic-score" style="color:#0984e3;">0</span></div>
-        <div>📏 Panjang: <span id="vic-length" style="color:#6c5ce7;">15 cm</span></div>
-        <div>✅ Benar: <span id="vic-correct" style="color:#00b894;">0/3</span></div>
+      <div style="background: none; padding: 12px; border-radius: 12px; margin: 10px 0; display: flex; justify-content: space-around; font-weight: bold;">
+        <div>Poin: <span id="vic-score" style="color:#ffffff;">0</span></div>
+        <div>Panjang: <span id="vic-length" style="color:#ffff;">15 cm</span></div>
+        <div>Benar: <span id="vic-correct" style="color:#ffffff;">0/3</span></div>
       </div>
 
       <h3 id="vic-rank" style="margin: 15px 0; color: #e17055;">Peringkat Sementara: #1</h3>
 
       <div class="menu-buttons">
-        <button class="btn-menu btn-success" onclick="restartGame()">🔄 Main Lagi</button>
-        <button class="btn-menu btn-primary" onclick="showScreen('screen-leaderboard')">🏆 Lihat Leaderboard</button>
-        <button class="btn-menu" onclick="showScreen('screen-home')">🏠 Menu Utama</button>
+        <button class="btn-menu btn-success" style="background-color: #fdcb6e; color: #2d3436; box-shadow: none;" onclick="restartGame()">Play Again</button>
+        <button class="btn-menu btn-primary" style="color: #2d3436; box-shadow: none;" onclick="showScreen('screen-leaderboard')">Leaderboard</button>
+        <button class="btn-menu" style=" background-color: #fdcb6e; color: #2d3436; box-shadow: none;"onclick="showScreen('screen-home')">Back to main menu</button>
       </div>
     </div>
   </div>
@@ -716,7 +720,37 @@
     const teacherPIN = "1234";
     let isMusicPlaying = false;
     
+    function openTeacherManageQuestions() { // sesuaikan nama fungsinya
+  // ... kode membuka menu/modal ...
+  
+      renderQuestions(); // <-- Tambahkan baris ini agar teks "No questions added yet." langsung muncul
+    }
+    function renderQuestions() {
+      const container = document.getElementById('teacher-question-list'); // sesuaikan ID container daftar soal kamu
+  
+  // Jika array questions kosong
+      if (questions.length === 0) {
+        container.innerHTML = `
+          <div style="text-align: center; color: #ffffff; padding: 15px; font-weight: bold;">
+            No questions added yet.
+          </div>
+        `;
+        return;
+      }
 
+  // Jika ada soal, render daftarnya
+      let html = '';
+      questions.forEach((q, index) => {
+        html += `
+          <div class="question-item">
+            <strong>${index + 1}. ${q.question}</strong>
+            <p>Jawaban: ${q.answer}</p>
+          </div>
+        `;
+      });
+  
+      container.innerHTML = html;
+  }
     function showAlert(msg, title = "Pemberitahuan", icon = "🔑") {
       document.getElementById('alert-title').innerText = title;
       document.getElementById('alert-msg').innerText = msg;
@@ -870,11 +904,7 @@
       }, 35);
     });
 
-    let questions = [
-      { q: "Berapakah 12 x 8?", opts: ["86", "96", "108", "116"], ans: "96" },
-      { q: "Jika 3x + 5 = 20, berapakah nilai x?", opts: ["3", "4", "5", "6"], ans: "5" },
-      { q: "Luas persegi dengan sisi 6 cm adalah...", opts: ["12 cm²", "24 cm²", "36 cm²", "48 cm²"], ans: "36 cm²" }
-    ];
+    let questions = [];
 
     function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
 
@@ -941,7 +971,7 @@
       }).then(() => {
         document.getElementById('active-room-display').innerText = activeRoomCode;
         document.getElementById('room-code').value = activeRoomCode;
-        showAlert("Kode Room Baru Berhasil Dibuat: " + activeRoomCode, "Berhasil", "🔑");
+        showAlert("Your room code has been created successfully: " + activeRoomCode, "Success!", "🔑");
     
     // Dengarkan data siswa yang masuk ke room ini
         listenTeacherData(activeRoomCode);
@@ -1201,10 +1231,10 @@ canvas.ontouchmove = (e) => {
         player.length += 3;
         player.score += 10;
         player.correct++;
-        showResultModal(true, "Jawaban Benar! Panjang ular +3 cm, poin +10.");
+        showResultModal(true, "Correct Answer! Snake lefht +3 cm, +10 points");
       } else {
         player.length = Math.max(3, player.length - 3);
-        showResultModal(false, "Jawaban Salah! Panjang ular -3 cm.");
+        showResultModal(false, "Incorrect Answer! Snake length -3 cm");
       }
 
       bubbles = bubbles.filter(b => b !== currentActiveBubble);
@@ -1220,12 +1250,12 @@ canvas.ontouchmove = (e) => {
       if (isCorrect) {
         box.style.borderColor = "#00b894";
         icon.innerText = "🎉";
-        title.innerText = "Hebat! Jawaban Benar";
+        title.innerText = "GREAT! Correct Answer";
         title.style.color = "#00b894";
       } else {
         box.style.borderColor = "#d63031";
         icon.innerText = "❌";
-        title.innerText = "Sayang Sekali!";
+        title.innerText = "Try Again!";
         title.style.color = "#d63031";
       }
 
@@ -1248,10 +1278,10 @@ canvas.ontouchmove = (e) => {
       isModalOpen = true;
       saveScoreToFirebase();
 
-      let rankText = "🥇 Juara 1 (Sangat Luar Biasa!)";
-      if (player.correct < questions.length) rankText = "🥈 Peringkat 2 (Bagus, Coba Lagi!)";
+      let rankText = "Amazing! You're in 1st place";
+      if (player.correct < questions.length) rankText = "Great effort! Try again";
 
-      document.getElementById('vic-player').innerText = "Pemain: " + player.name;
+      document.getElementById('vic-player').innerText = "Player: " + player.name;
       document.getElementById('vic-score').innerText = player.score;
       document.getElementById('vic-length').innerText = player.length + " cm";
       document.getElementById('vic-correct').innerText = player.correct + "/" + questions.length;
