@@ -1,0 +1,13 @@
+{
+  "background_color": "#ffffff",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "Snake Quiz",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "Snake Quiz",
+  "start_url": "/",
+  "theme_color": "#ffffff",
+  "description": "An interactive game app where you answer questions while playing Snake.",
+  "id": "https://snakequizz.netlify.app/"
+}
