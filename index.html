@@ -473,6 +473,7 @@
     const db = firebase.database();
     console.log("Firebase terhubung:", db);
   </script>
+  
 
   <!-- AUDIO LATAR BELAKANG (BGM) -->
   <audio id="bgm" loop>
@@ -621,7 +622,7 @@
           <input type="text" id="opt-ans" class="form-control" placeholder="The correct Answer">
         </div>
 
-        <button class="btn-menu" style="background-color: #fdcb6e; color: #2d3436; box-shadow: none;" onclick="saveQuestion()">Save Question</button>
+        <button class="btn-menu" style="background-color: #fdcb6e; color: #2d3436; box-shadow: none;" onclick="addCustomQuestion()">Save Question</button>
       </div>
 
       <h3>Current Question List</h3>
