@@ -5,7 +5,56 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quiz Snake</title>
   <style>
-    
+    /* Styling umum untuk layar kecil / HP */
+    .screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      box-sizing: border-box;
+      width: 100%;
+      max-width: 480px; /* Batasi lebar maksimal di HP */
+      margin: 0 auto;
+      min-height: 100vh; /* Menyesuaikan tinggi layar HP */   
+    }
+
+    /* Mengatur form input soal atau menu agar rapi secara vertikal */
+    .input-group, .form-container, .button-group {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      gap: 10px; /* Jarak antar elemen agar tidak nempel */
+      margin-bottom: 12px;
+    }
+
+/* Tombol agar pas di layar HP */
+    button, input, select {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px; /* Ukuran font aman untuk disentuh jari */
+      border-radius: 8px;
+      box-sizing: border-box;
+    }
+
+    #question-list-display, #teacher-question-list {
+      max-height: 250px; /* Batasi tinggi area daftar soal */
+      overflow-y: auto;   /* Munculkan scrollbar vertikal jika melebihi batas */
+      width: 100%;
+      border: 1px solid #ccc;
+      padding: 8px;
+      border-radius: 6px;
+      background: #f9f9f9;
+    }
+
+    canvas {
+      width: 100% !important;
+      max-width: 400px;
+      height: auto !important;
+      aspect-ratio: 9 / 16; /* Sesuaikan rasio game Anda (misal vertikal) */
+      display: block;
+      margin: 0 auto;
+    }
     
     .icon-img {
       width: 30px;         /* Lebar gambar */
