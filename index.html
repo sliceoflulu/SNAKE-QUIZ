@@ -6,74 +6,17 @@
   <title>Quiz Snake</title>
   <style>
     
-  @media (max-width: 600px) {
-
-    header {
-        padding: 8px 12px;
-    }
-
-    .logo {
-        font-size: 1.25rem;
-    }
-
-    .header-controls {
-        gap: 5px;
-    }
-
-    .btn-dark-toggle,
-    .btn-music-toggle {
-        padding: 6px 8px;
-        font-size: 0.7rem;
-        min-width: 65px;
-    }
-
-    .right-sidebar {
-        right: 8px;
-        top: 85px;
-        gap: 7px;
-    }
-
-    .sidebar-btn {
-        padding: 8px 10px;
-        font-size: 0.7rem;
-    }
-
-    main {
-        padding: 15px 10px;
-    }
-
-    .view-screen {
-        width: calc(100% - 10px);
-        max-width: 360px;
-        padding: 20px 16px;
-        border-radius: 20px;
-    }
-
-    .view-screen h2 {
-        font-size: 1.35rem;
-    }
-
-    .form-control {
-        padding: 11px;
-        font-size: 0.9rem;
-    }
-
-    .btn-menu {
-        padding: 11px;
-        font-size: 0.9rem;
-    }
-  }
     
     .icon-img {
-      width: 30px;         /* Lebar gambar */
-      height: 30px;        /* Tinggi gambar */
+      width: 20px;         /* Lebar gambar */
+      height: 20px;        /* Tinggi gambar */
       object-fit: contain; /* Agar gambar tidak gepeng */
       vertical-align: middle; /* Supaya sejajar dengan teks */
       margin-right: 2px;   /* Jarak antara gambar dan teks */
     }
     .btn-icon {
-      width: 40px;
-      height: 40px;
+      width: 30px;
+      height: 30px;
       object-fit: contain;
     }
 
@@ -89,11 +32,11 @@
     /* Sidebar Melayang di Kanan */
     .right-sidebar {
       position: fixed;
-      right: 15px;
+      right: 5px;
       top: 100px;
       display: flex;
       flex-direction: column; /* Menurun ke bawah */
-      gap: 12px;
+      gap: 2px;
       z-index: 9999; /* Agar selalu melayang di atas background/canvas */
     }
 
@@ -101,12 +44,12 @@
     .sidebar-btn {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 4px;
       background: #fdcb6e;
       border: 1px solid rgba(0, 0, 0, 0.1);
-      padding: 10px 14px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      padding: 5px 7px;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
       cursor: pointer;
       transition: all 0.2s ease;
       font-family: inherit;
