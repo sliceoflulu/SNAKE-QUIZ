@@ -15,8 +15,8 @@
       margin-right: 2px;   /* Jarak antara gambar dan teks */
     }
     .btn-icon {
-      width: 40px;
-      height: 40px;
+      width: 24px;
+      height: 24px;
       object-fit: contain;
     }
 
@@ -33,7 +33,7 @@
     .right-sidebar {
       position: fixed;
       right: 15px;
-      top: 100px;
+      top: 60px;
       display: flex;
       flex-direction: column; /* Menurun ke bawah */
       gap: 12px;
@@ -71,9 +71,11 @@
     }
 
 /* Penyesuaian Responsif di Layar HP */
-    @media (max-width: 300px) {
+    @media (max-width: 600px) {
     .right-sidebar {
       right: 8px;
+      top: 70px;
+      gap: 8px;
       }
   
   /* Di HP hanya munculkan ikon saja (seperti sidebar Gemini) biar enggak makan tempat */
@@ -82,8 +84,8 @@
       }
   
     .sidebar-btn {
-      padding: 10px;
-      border-radius: 50%; /* Bikin tombol berbentuk lingkaran di HP */
+      padding: 6px;
+      border-radius: 10%; /* Bikin tombol berbentuk lingkaran di HP */
       }
     }
     .game-hud {
@@ -528,15 +530,15 @@
     <div class="right-sidebar" >
 
       <button class="sidebar-btn" onclick="openHowToPlayModal()">
-        <img src="asset/book.png" alt="Book" class="btn-icon"> How to play
+        <img src="asset/book.png" alt="Book" class="btn-icon">
       </button>
   
       <button class="sidebar-btn" onclick="showScreen('screen-leaderboard')">
-        <img src="asset/5.png" alt="Leaderboard" class="btn-icon"> Leaderboard
+        <img src="asset/5.png" alt="Leaderboard" class="btn-icon"> 
       </button>
   
       <button class="sidebar-btn btn-teacher" onclick="openTeacherLogin()">
-        <img src="asset/2.png" alt="Teacher Access" class="btn-icon"> Teacher Access
+        <img src="asset/2.png" alt="Teacher Access" class="btn-icon"> 
       </button>
     </div>
   <main>
