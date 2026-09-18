@@ -8,8 +8,8 @@
     
     
     .icon-img {
-      width: 30px;         /* Lebar gambar */
-      height: 30px;        /* Tinggi gambar */
+      width: 18px;         /* Lebar gambar */
+      height: 18px;        /* Tinggi gambar */
       object-fit: contain; /* Agar gambar tidak gepeng */
       vertical-align: middle; /* Supaya sejajar dengan teks */
       margin-right: 2px;   /* Jarak antara gambar dan teks */
@@ -284,22 +284,23 @@
       display: flex; 
       justify-content: space-between; 
       align-items: center; 
-      padding: 15px 30px; 
+      padding: 8px 12px; 
       background: rgb(78, 42, 3); 
       border-bottom: 4px solid var(--accent-yellow); 
       box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     }
-    .logo { font-size: 1.8rem; font-weight: bold; color: #fdcb6e; display: flex; align-items: center; gap: 8px; }
+    .logo { font-size: 1.1rem; font-weight: bold; color: #fdcb6e; display: flex; align-items: center; gap: 8px; }
     
-    .header-controls { display: flex; gap: 10px; align-items: center; }
+    .header-controls { display: flex; gap: 5px; align-items: center; }
     .btn-dark-toggle, .btn-music-toggle { 
-      padding: 8px 14px; 
+      padding: 5px 8px; 
       border-radius: 20px; 
       border: 2px solid var(--accent-yellow); 
       background: var(--btn-bg); 
       color: var(--btn-text); 
       cursor: pointer; 
       font-weight: bold; 
+      font-size: 0.75rem;
       transition: transform 0.2s;
     }
     .btn-dark-toggle:hover, .btn-music-toggle:hover { transform: scale(1.05); }
@@ -329,8 +330,8 @@
 
     .mascot-container { display: inline-block; margin-bottom: 10px; position: relative; }
     .mascot-snake {
-      width: 90px;
-      height: 90px;
+      width: 24x !important;
+      height: 24px !important;
       object-fit: contain;
       animation: snakeWiggle 3s infinite ease-in-out;
       filter: drop-shadow(0 8px 12px rgba(9, 132, 227, 0.3));
@@ -486,6 +487,7 @@
   </audio>
 
   <!-- LOADING SCREEN -->
+   
   <div id="loading-screen">
     <div class="loading-content">
       <div class="loading-title">SNAKE-QUIZ</div>
