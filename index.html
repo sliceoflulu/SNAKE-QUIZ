@@ -323,8 +323,18 @@
       text-align: center; 
       animation: fadeIn 0.4s ease-out;
     }
-    .view-screen.active { display: block; }
-    .view-screen.wide { max-width: 800px; }
+    .view-screen.active { 
+      display: block;
+    }
+    #screen-game.view-screen.active {
+      display: flex !important;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 450px !important;
+      width: 95vw !important;
+      height: 85vh !important;
+    }
 
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(15px); }
@@ -385,15 +395,18 @@
 
     /* KANVAS PAPAN KAYU */
     #gameCanvas { 
-      background: #0f172a; /* Diubah jadi warna gelap ala game cacing */
-      border: 6px solid #334155; 
+      background: #0f172a; 
+      border: 4px solid #334155; 
       border-radius: 16px; 
       cursor: crosshair; 
       box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
-      max-width: 100%;
-      height: auto;
-}
-
+      width: 90vw !important;
+      max-width: 400px !important;
+      height: 60vh !important;
+      max-height: 550px !important;
+      touch-action: none;
+      object-fit: contain;
+    }
 /* Sesuaikan padding container di layar HP */
     @media (max-width: 300px) {
   .view-screen {
@@ -1053,6 +1066,8 @@
     function startGame() {
       canvas = document.getElementById('gameCanvas');
       ctx = canvas.getContext('2d');
+      canvas.width = 400;
+      canvas.height = 650;
       player.name = document.getElementById('player-name').value || "Siswa SMP";
       player.length = 15;
       player.score = 0;
