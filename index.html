@@ -5,7 +5,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quiz Snake</title>
   <style>
-    
+    /* Mengubah warna scrollbar khusus untuk tabel Student Scores agar senada */
+    .table-responsive-wrapper::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    .table-responsive-wrapper::-webkit-scrollbar-track {
+      background: rgba(78, 42, 3, 0.3); /* Warna track/jalur cokelat transparan */
+      border-radius: 10px;
+    }
+
+    .table-responsive-wrapper::-webkit-scrollbar-thumb {
+      background: #fdcb6e; /* Warna batang scrollbar menjadi kuning */
+      border-radius: 10px;
+    }
+
+    .table-responsive-wrapper::-webkit-scrollbar-thumb:hover {
+      background: #e1b12c; /* Warna batang saat disentuh/hover */
+    }
+    /* CSS Tambahan untuk Mengatasi Tabel Keluar di HP */
+    .table-responsive-wrapper {
+      width: 100%;
+      overflow-x: auto; /* Memungkinkan tabel digeser ke samping jika melebihi layar */
+      -webkit-overflow-scrolling: touch;
+      margin-top: 15px;
+    }
+
+    #screen-teacher table {
+      min-width: 450px; /* Memastikan tabel tidak terlalu gepeng dan bisa digeser */
+    }
     
     .icon-img {
       width: 18px;         /* Lebar gambar */
@@ -522,11 +550,7 @@
 
   <header>
   
-    <div class="logo">
-      <svg class="mascot-snake" style="width:32px; height:32px; animation-duration:2s;" viewBox="0 0 100 100">
-        <path d="M20,50 Q40,20 60,50 T100,50" fill="none" stroke="#00b894" stroke-width="15" stroke-linecap="round"/>
-        <circle cx="85" cy="42" r="3" fill="#000"/>
-      </svg>
+    <div class="logo">  
       Snake Quiz
     </div>
     <div class="header-controls">
@@ -556,13 +580,8 @@
     </div>
   <main>
     <div id="screen-home" class="view-screen active">
-      <div class="mascot-container">
-        <svg class="mascot-snake" viewBox="0 0 120 120">
-          <path d="M15,75 Q35,35 60,75 T105,65" fill="none" stroke="#00b894" stroke-width="22" stroke-linecap="round"/>
-          <path d="M15,75 Q35,35 60,75 T105,65" fill="none" stroke="#55efc4" stroke-width="12" stroke-linecap="round"/>
-          <circle cx="95" cy="55" r="4" fill="#2d3436"/>
-          <path d="M105,65 Q115,65 118,60 M105,65 Q115,65 118,70" fill="none" stroke="#d63031" stroke-width="3" stroke-linecap="round"/>
-        </svg>
+      <div style="text-align: center; margin-bottom: 5px;">
+        <img src="asset/ular33.png" alt="Snake" style="width: 100px; height: auto; filter: drop-shadow(0px 4px 4px rgba(0,0,0,0.4));">
       </div>
       
       <h2>Welcome, Adventure!</h2>
@@ -605,18 +624,20 @@
       </div>
 
       <h3>Student Scores</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Rank</th>
-            <th>Name</th>
-            <th>Snake Length</th>
-            <th>Score</th>
-            <th>Accuracy</th>
-          </tr>
-        </thead>
+      <div class="table-responsive-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Name</th>
+              <th>Snake Length</th>
+              <th>Score</th>
+              <th>Accuracy</th>
+            </tr>
+          </thead>
         <tbody id="teacher-table-body"></tbody>
-      </table>
+        </table>
+      </div>
       <button class="btn-menu" style="margin-top: 20px; background-color: #fdcb6e; color: #2d3436;" onclick="showScreen('screen-home')">Go back to main menu</button>
     </div>
 
